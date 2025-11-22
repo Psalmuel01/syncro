@@ -1,10 +1,15 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { X, DollarSign, Calendar, Tag, AlertCircle } from "lucide-react"
-import { validateSubscriptionData } from "@/lib/validation"
+import { useState } from "react";
+import { X, DollarSign, Calendar, Tag, AlertCircle } from "lucide-react";
+import { validateSubscriptionData } from "@/lib/validation";
 
-export default function EditSubscriptionModal({ subscription, onSave, onClose, darkMode }) {
+export default function EditSubscriptionModal({
+  subscription,
+  onSave,
+  onClose,
+  darkMode,
+}) {
   const [formData, setFormData] = useState({
     name: subscription.name,
     price: subscription.price,
@@ -13,32 +18,32 @@ export default function EditSubscriptionModal({ subscription, onSave, onClose, d
     category: subscription.category,
     tags: subscription.tags?.join(", ") || "",
     renewalUrl: subscription.renewalUrl || "",
-  })
+  });
 
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const validation = validateSubscriptionData(formData)
+    const validation = validateSubscriptionData(formData);
     if (!validation.isValid) {
-      setErrors(validation.errors)
-      return
+      setErrors(validation.errors);
+      return;
     }
 
     // Convert tags string to array
     const tagsArray = formData.tags
       .split(",")
       .map((t) => t.trim())
-      .filter((t) => t)
+      .filter((t) => t);
 
     onSave({
       ...formData,
       price: Number.parseFloat(formData.price),
       renewsIn: Number.parseInt(formData.renewsIn),
       tags: tagsArray,
-    })
-  }
+    });
+  };
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -49,36 +54,47 @@ export default function EditSubscriptionModal({ subscription, onSave, onClose, d
         <div className="bg-gradient-to-r from-[#1E2A35] to-[#2D3748] p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-white">Edit Subscription</h2>
-            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
               <X className="w-5 h-5 text-white" />
             </button>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* Name */}
             <div>
-              <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              <label
+                className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+              >
                 Subscription Name
               </label>
               <input
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                   darkMode
                     ? "bg-[#1E2A35] border-[#374151] text-white focus:ring-[#FFD166]"
                     : "bg-white border-gray-300 text-gray-900 focus:ring-black"
                 } ${errors.name ? "border-red-500" : ""}`}
               />
-              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+              {errors.name && (
+                <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+              )}
             </div>
 
             {/* Price and Billing Cycle */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   <DollarSign className="w-4 h-4 inline mr-1" />
                   Price
                 </label>
@@ -86,23 +102,31 @@ export default function EditSubscriptionModal({ subscription, onSave, onClose, d
                   type="number"
                   step="0.01"
                   value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, price: e.target.value })
+                  }
                   className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                     darkMode
                       ? "bg-[#1E2A35] border-[#374151] text-white focus:ring-[#FFD166]"
                       : "bg-white border-gray-300 text-gray-900 focus:ring-black"
                   } ${errors.price ? "border-red-500" : ""}`}
                 />
-                {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
+                {errors.price && (
+                  <p className="text-red-500 text-xs mt-1">{errors.price}</p>
+                )}
               </div>
 
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   Billing Cycle
                 </label>
                 <select
                   value={formData.billingCycle}
-                  onChange={(e) => setFormData({ ...formData, billingCycle: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, billingCycle: e.target.value })
+                  }
                   className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                     darkMode
                       ? "bg-[#1E2A35] border-[#374151] text-white focus:ring-[#FFD166]"
@@ -119,32 +143,42 @@ export default function EditSubscriptionModal({ subscription, onSave, onClose, d
             {/* Renewal Days */}
             {formData.billingCycle !== "lifetime" && (
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   <Calendar className="w-4 h-4 inline mr-1" />
                   Days Until Renewal
                 </label>
                 <input
                   type="number"
                   value={formData.renewsIn}
-                  onChange={(e) => setFormData({ ...formData, renewsIn: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, renewsIn: e.target.value })
+                  }
                   className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                     darkMode
                       ? "bg-[#1E2A35] border-[#374151] text-white focus:ring-[#FFD166]"
                       : "bg-white border-gray-300 text-gray-900 focus:ring-black"
                   } ${errors.renewsIn ? "border-red-500" : ""}`}
                 />
-                {errors.renewsIn && <p className="text-red-500 text-xs mt-1">{errors.renewsIn}</p>}
+                {errors.renewsIn && (
+                  <p className="text-red-500 text-xs mt-1">{errors.renewsIn}</p>
+                )}
               </div>
             )}
 
             {/* Category */}
             <div>
-              <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              <label
+                className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+              >
                 Category
               </label>
               <select
                 value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                   darkMode
                     ? "bg-[#1E2A35] border-[#374151] text-white focus:ring-[#FFD166]"
@@ -164,14 +198,18 @@ export default function EditSubscriptionModal({ subscription, onSave, onClose, d
 
             {/* Tags */}
             <div>
-              <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              <label
+                className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+              >
                 <Tag className="w-4 h-4 inline mr-1" />
                 Tags (comma separated)
               </label>
               <input
                 type="text"
                 value={formData.tags}
-                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, tags: e.target.value })
+                }
                 placeholder="ai, productivity, work"
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                   darkMode
@@ -183,13 +221,17 @@ export default function EditSubscriptionModal({ subscription, onSave, onClose, d
 
             {/* Renewal URL */}
             <div>
-              <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              <label
+                className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+              >
                 Renewal/Management URL (optional)
               </label>
               <input
                 type="url"
                 value={formData.renewalUrl}
-                onChange={(e) => setFormData({ ...formData, renewalUrl: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, renewalUrl: e.target.value })
+                }
                 placeholder="https://..."
                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                   darkMode
@@ -205,8 +247,11 @@ export default function EditSubscriptionModal({ subscription, onSave, onClose, d
                 className={`flex items-start gap-2 p-3 rounded-lg ${darkMode ? "bg-[#FFD166]/10 border border-[#FFD166]/30" : "bg-yellow-50 border border-yellow-200"}`}
               >
                 <AlertCircle className="w-5 h-5 text-[#FFD166] flex-shrink-0 mt-0.5" />
-                <p className={`text-xs ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                  This subscription was auto-detected. Manual edits will prevent automatic updates from email scans.
+                <p
+                  className={`text-xs ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
+                  This subscription was auto-detected. Manual edits will prevent
+                  automatic updates from email scans.
                 </p>
               </div>
             )}
@@ -235,5 +280,5 @@ export default function EditSubscriptionModal({ subscription, onSave, onClose, d
         </form>
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { X } from "lucide-react"
+import { X } from "lucide-react";
 
 export default function ManageIntegrationModal({ integration, onClose }) {
   return (
@@ -8,36 +8,49 @@ export default function ManageIntegrationModal({ integration, onClose }) {
       <div className="bg-white rounded-xl shadow-lg max-w-md w-full mx-4">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Manage {integration.name}</h2>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Manage {integration.name}
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+          >
             <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-4">
+        <div className="p-6 space-y-3">
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-2">Integration Details</h3>
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">
+              Integration Details
+            </h3>
             <div className="space-y-2 text-sm text-gray-600">
               <p>
-                <span className="font-medium text-gray-900">Type:</span> {integration.type}
+                <span className="font-medium text-gray-900">Type:</span>{" "}
+                {integration.type}
               </p>
               <p>
-                <span className="font-medium text-gray-900">Status:</span> {integration.status}
+                <span className="font-medium text-gray-900">Status:</span>{" "}
+                {integration.status}
               </p>
               <p>
-                <span className="font-medium text-gray-900">Last Sync:</span> {integration.lastSync}
+                <span className="font-medium text-gray-900">Last Sync:</span>{" "}
+                {integration.lastSync}
               </p>
               {integration.accounts > 0 && (
                 <p>
-                  <span className="font-medium text-gray-900">Accounts:</span> {integration.accounts}
+                  <span className="font-medium text-gray-900">Accounts:</span>{" "}
+                  {integration.accounts}
                 </p>
               )}
             </div>
           </div>
 
           <div className="pt-4 border-t border-gray-200">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">Actions</h3>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+              Actions
+            </h3>
             <div className="space-y-2">
               <button className="w-full px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                 Resync Now
@@ -63,5 +76,5 @@ export default function ManageIntegrationModal({ integration, onClose }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,57 +1,59 @@
-"use client"
-import { X, Check, Copy, Wallet, CreditCard, Shield, Zap } from "lucide-react"
-import { useState, useEffect } from "react"
-import QRCode from "react-qr-code"
+"use client";
+import { X, Check, Copy, Wallet, CreditCard, Shield, Zap } from "lucide-react";
+import { useState, useEffect } from "react";
+import QRCode from "react-qr-code";
 
 function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
-  const [selectedToken, setSelectedToken] = useState("USDC")
-  const [selectedChain, setSelectedChain] = useState("ethereum")
-  const [copied, setCopied] = useState(false)
-  const [txHash, setTxHash] = useState("")
+  const [selectedToken, setSelectedToken] = useState("USDC");
+  const [selectedChain, setSelectedChain] = useState("ethereum");
+  const [copied, setCopied] = useState(false);
+  const [txHash, setTxHash] = useState("");
 
   const tokens = [
     { id: "USDC", name: "USDC", icon: "💵" },
     { id: "USDT", name: "USDT", icon: "💲" },
     { id: "DAI", name: "DAI", icon: "◈" },
-  ]
+  ];
 
   const chains = [
     { id: "ethereum", name: "Ethereum", icon: "⟠", color: "#627EEA" },
     { id: "polygon", name: "Polygon", icon: "⬡", color: "#8247E5" },
     { id: "bsc", name: "BSC", icon: "◆", color: "#F3BA2F" },
     { id: "tron", name: "Tron", icon: "▲", color: "#FF0013" },
-  ]
+  ];
 
   const walletAddresses = {
     ethereum: "0x742d35Cc6634C0532925a3b844Bc9e7595f42bE1",
     polygon: "0x742d35Cc6634C0532925a3b844Bc9e7595f42bE2",
     bsc: "0x742d35Cc6634C0532925a3b844Bc9e7595f42bE3",
     tron: "TYASr5UV6HEcXatwdFQfmLVUqQQQMUxHLS",
-  }
+  };
 
-  const currentWallet = walletAddresses[selectedChain]
-  const selectedChainData = chains.find((c) => c.id === selectedChain)
-  const selectedTokenData = tokens.find((t) => t.id === selectedToken)
+  const currentWallet = walletAddresses[selectedChain];
+  const selectedChainData = chains.find((c) => c.id === selectedChain);
+  const selectedTokenData = tokens.find((t) => t.id === selectedToken);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(currentWallet)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    navigator.clipboard.writeText(currentWallet);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleConfirm = () => {
     if (!txHash) {
-      alert("Please enter your transaction hash")
-      return
+      alert("Please enter your transaction hash");
+      return;
     }
-    onSuccess()
-  }
+    onSuccess();
+  };
 
   return (
     <div className="space-y-6">
       {/* Token Selection */}
       <div>
-        <label className={`block text-sm font-semibold mb-3 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+        <label
+          className={`block text-sm font-semibold mb-3 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+        >
           Select Stablecoin
         </label>
         <div className="grid grid-cols-3 gap-3">
@@ -71,7 +73,11 @@ function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
             >
               <div className="flex flex-col items-center gap-2">
                 <span className="text-2xl">{token.icon}</span>
-                <span className={`font-semibold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>{token.name}</span>
+                <span
+                  className={`font-semibold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+                >
+                  {token.name}
+                </span>
               </div>
             </button>
           ))}
@@ -80,7 +86,9 @@ function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
 
       {/* Chain Selection */}
       <div>
-        <label className={`block text-sm font-semibold mb-3 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+        <label
+          className={`block text-sm font-semibold mb-3 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+        >
           Select Blockchain Network
         </label>
         <div className="grid grid-cols-2 gap-3">
@@ -100,7 +108,11 @@ function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
             >
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{chain.icon}</span>
-                <span className={`font-semibold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>{chain.name}</span>
+                <span
+                  className={`font-semibold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+                >
+                  {chain.name}
+                </span>
               </div>
             </button>
           ))}
@@ -112,8 +124,14 @@ function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
         className={`p-6 rounded-xl border-2 ${darkMode ? "border-[#374151] bg-[#2D3748]" : "border-gray-200 bg-gray-50"}`}
       >
         <div className="flex items-center justify-between mb-4">
-          <span className={`text-sm font-medium ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Amount to Send</span>
-          <span className={`text-2xl font-bold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+          <span
+            className={`text-sm font-medium ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+          >
+            Amount to Send
+          </span>
+          <span
+            className={`text-2xl font-bold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+          >
             ${plan.price} {selectedToken}
           </span>
         </div>
@@ -127,7 +145,9 @@ function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
           >
             {selectedChainData?.icon}
           </span>
-          <span className={`text-sm font-medium ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+          <span
+            className={`text-sm font-medium ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+          >
             {selectedChainData?.name} Network
           </span>
         </div>
@@ -139,13 +159,17 @@ function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
 
         {/* Wallet Address */}
         <div>
-          <label className={`block text-xs font-medium mb-2 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+          <label
+            className={`block text-xs font-medium mb-2 ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+          >
             Wallet Address
           </label>
           <div
             className={`flex items-center gap-2 p-3 rounded-lg ${darkMode ? "bg-[#1E2A35]" : "bg-white"} border ${darkMode ? "border-[#374151]" : "border-gray-200"}`}
           >
-            <code className={`flex-1 text-xs font-mono ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"} break-all`}>
+            <code
+              className={`flex-1 text-xs font-mono ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"} break-all`}
+            >
               {currentWallet}
             </code>
             <button
@@ -156,14 +180,20 @@ function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
             </button>
           </div>
           {copied && (
-            <p className={`text-xs mt-2 ${darkMode ? "text-[#007A5C]" : "text-green-600"}`}>Copied to clipboard!</p>
+            <p
+              className={`text-xs mt-2 ${darkMode ? "text-[#007A5C]" : "text-green-600"}`}
+            >
+              Copied to clipboard!
+            </p>
           )}
         </div>
       </div>
 
       {/* Transaction Hash Input */}
       <div>
-        <label className={`block text-sm font-semibold mb-2 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+        <label
+          className={`block text-sm font-semibold mb-2 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+        >
           Transaction Hash <span className="text-[#E86A33]">*</span>
         </label>
         <input
@@ -177,7 +207,9 @@ function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
               : "bg-white border-gray-200 text-[#1E2A35] focus:border-[#1E2A35]"
           } focus:outline-none transition-colors`}
         />
-        <p className={`text-xs mt-2 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+        <p
+          className={`text-xs mt-2 ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+        >
           Enter your transaction hash after sending the payment
         </p>
       </div>
@@ -187,7 +219,9 @@ function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
         <button
           onClick={onCancel}
           className={`flex-1 py-3 rounded-lg font-semibold transition-colors ${
-            darkMode ? "bg-[#374151] text-[#F9F6F2] hover:bg-[#4B5563]" : "bg-gray-100 text-[#1E2A35] hover:bg-gray-200"
+            darkMode
+              ? "bg-[#374151] text-[#F9F6F2] hover:bg-[#4B5563]"
+              : "bg-gray-100 text-[#1E2A35] hover:bg-gray-200"
           }`}
         >
           Cancel
@@ -201,51 +235,53 @@ function CryptoPaymentForm({ plan, onSuccess, onCancel, darkMode }) {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 function StripePaymentForm({ plan, onSuccess, onCancel, darkMode }) {
-  const [loading, setLoading] = useState(false)
-  const [cardNumber, setCardNumber] = useState("")
-  const [expiry, setExpiry] = useState("")
-  const [cvc, setCvc] = useState("")
-  const [name, setName] = useState("")
+  const [loading, setLoading] = useState(false);
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvc, setCvc] = useState("");
+  const [name, setName] = useState("");
 
   const formatCardNumber = (value) => {
     return value
       .replace(/\s/g, "")
       .replace(/(\d{4})/g, "$1 ")
-      .trim()
-  }
+      .trim();
+  };
 
   const formatExpiry = (value) => {
-    const cleaned = value.replace(/\D/g, "")
+    const cleaned = value.replace(/\D/g, "");
     if (cleaned.length >= 2) {
-      return cleaned.slice(0, 2) + "/" + cleaned.slice(2, 4)
+      return cleaned.slice(0, 2) + "/" + cleaned.slice(2, 4);
     }
-    return cleaned
-  }
+    return cleaned;
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!cardNumber || !expiry || !cvc || !name) {
-      alert("Please fill in all card details")
-      return
+      alert("Please fill in all card details");
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     // Simulate payment processing
     setTimeout(() => {
-      setLoading(false)
-      onSuccess()
-    }, 2000)
-  }
+      setLoading(false);
+      onSuccess();
+    }, 2000);
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Card Number */}
       <div>
-        <label className={`block text-sm font-semibold mb-2 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+        <label
+          className={`block text-sm font-semibold mb-2 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+        >
           Card Number
         </label>
         <input
@@ -264,7 +300,9 @@ function StripePaymentForm({ plan, onSuccess, onCancel, darkMode }) {
 
       {/* Cardholder Name */}
       <div>
-        <label className={`block text-sm font-semibold mb-2 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+        <label
+          className={`block text-sm font-semibold mb-2 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+        >
           Cardholder Name
         </label>
         <input
@@ -283,7 +321,9 @@ function StripePaymentForm({ plan, onSuccess, onCancel, darkMode }) {
       {/* Expiry and CVC */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className={`block text-sm font-semibold mb-2 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+          <label
+            className={`block text-sm font-semibold mb-2 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+          >
             Expiry Date
           </label>
           <input
@@ -300,14 +340,18 @@ function StripePaymentForm({ plan, onSuccess, onCancel, darkMode }) {
           />
         </div>
         <div>
-          <label className={`block text-sm font-semibold mb-2 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+          <label
+            className={`block text-sm font-semibold mb-2 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+          >
             CVC
           </label>
           <input
             type="text"
             placeholder="123"
             value={cvc}
-            onChange={(e) => setCvc(e.target.value.replace(/\D/g, "").slice(0, 3))}
+            onChange={(e) =>
+              setCvc(e.target.value.replace(/\D/g, "").slice(0, 3))
+            }
             maxLength="3"
             className={`w-full px-4 py-3 rounded-lg border-2 ${
               darkMode
@@ -322,8 +366,12 @@ function StripePaymentForm({ plan, onSuccess, onCancel, darkMode }) {
       <div
         className={`flex items-center gap-3 p-4 rounded-lg ${darkMode ? "bg-[#007A5C]/10 border border-[#007A5C]/30" : "bg-green-50 border border-green-200"}`}
       >
-        <Shield className={`w-5 h-5 ${darkMode ? "text-[#007A5C]" : "text-green-600"}`} />
-        <p className={`text-sm ${darkMode ? "text-[#007A5C]" : "text-green-800"}`}>
+        <Shield
+          className={`w-5 h-5 ${darkMode ? "text-[#007A5C]" : "text-green-600"}`}
+        />
+        <p
+          className={`text-sm ${darkMode ? "text-[#007A5C]" : "text-green-800"}`}
+        >
           Your payment is secured with 256-bit SSL encryption
         </p>
       </div>
@@ -334,7 +382,9 @@ function StripePaymentForm({ plan, onSuccess, onCancel, darkMode }) {
           type="button"
           onClick={onCancel}
           className={`flex-1 py-3 rounded-lg font-semibold transition-colors ${
-            darkMode ? "bg-[#374151] text-[#F9F6F2] hover:bg-[#4B5563]" : "bg-gray-100 text-[#1E2A35] hover:bg-gray-200"
+            darkMode
+              ? "bg-[#374151] text-[#F9F6F2] hover:bg-[#4B5563]"
+              : "bg-gray-100 text-[#1E2A35] hover:bg-gray-200"
           }`}
         >
           Cancel
@@ -348,12 +398,19 @@ function StripePaymentForm({ plan, onSuccess, onCancel, darkMode }) {
         </button>
       </div>
     </form>
-  )
+  );
 }
 
-export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, darkMode }) {
-  const [selectedPlan, setSelectedPlan] = useState(null)
-  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "crypto">("stripe")
+export default function UpgradePlanModal({
+  currentPlan,
+  onUpgrade,
+  onClose,
+  darkMode,
+}) {
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "crypto">(
+    "stripe",
+  );
 
   const plans = [
     {
@@ -396,17 +453,17 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
         "Dedicated account manager",
       ],
     },
-  ]
+  ];
 
   useEffect(() => {
     if (selectedPlan && selectedPlan.price === 0) {
-      onUpgrade(selectedPlan.name)
-      onClose()
+      onUpgrade(selectedPlan.name);
+      onClose();
     }
-  }, [selectedPlan, onUpgrade, onClose])
+  }, [selectedPlan, onUpgrade, onClose]);
 
   if (selectedPlan && selectedPlan.price === 0) {
-    return null
+    return null;
   }
 
   if (selectedPlan) {
@@ -416,13 +473,19 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
           className={`${darkMode ? "bg-[#1E2A35]" : "bg-[#F9F6F2]"} rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-auto`}
         >
           {/* Header */}
-          <div className={`p-6 border-b ${darkMode ? "border-[#374151]" : "border-gray-200"}`}>
+          <div
+            className={`p-6 border-b ${darkMode ? "border-[#374151]" : "border-gray-200"}`}
+          >
             <div className="flex items-center justify-between">
               <div>
-                <h2 className={`text-2xl font-bold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+                <h2
+                  className={`text-2xl font-bold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+                >
                   Complete Your Purchase
                 </h2>
-                <p className={`text-sm mt-1 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm mt-1 ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Choose your preferred payment method
                 </p>
               </div>
@@ -442,23 +505,37 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Upgrading to</p>
-                  <h3 className={`text-xl font-bold mt-1 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+                  <p
+                    className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                  >
+                    Upgrading to
+                  </p>
+                  <h3
+                    className={`text-xl font-bold mt-1 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+                  >
                     {selectedPlan.displayName}
                   </h3>
                 </div>
                 <div className="text-right">
-                  <p className={`text-3xl font-bold ${darkMode ? "text-[#FFD166]" : "text-[#1E2A35]"}`}>
+                  <p
+                    className={`text-3xl font-bold ${darkMode ? "text-[#FFD166]" : "text-[#1E2A35]"}`}
+                  >
                     ${selectedPlan.price}
                   </p>
-                  <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>per month</p>
+                  <p
+                    className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                  >
+                    per month
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Payment Method Selection */}
             <div className="mb-6">
-              <label className={`block text-sm font-semibold mb-3 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+              <label
+                className={`block text-sm font-semibold mb-3 ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+              >
                 Payment Method
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -475,8 +552,16 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
                   <div className="flex items-center gap-3">
                     <CreditCard className="w-5 h-5" />
                     <div className="text-left">
-                      <p className={`font-semibold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>Card Payment</p>
-                      <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Visa, Mastercard</p>
+                      <p
+                        className={`font-semibold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+                      >
+                        Card Payment
+                      </p>
+                      <p
+                        className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                      >
+                        Visa, Mastercard
+                      </p>
                     </div>
                   </div>
                 </button>
@@ -493,10 +578,16 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
                   <div className="flex items-center gap-3">
                     <Wallet className="w-5 h-5" />
                     <div className="text-left">
-                      <p className={`font-semibold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+                      <p
+                        className={`font-semibold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+                      >
                         Cryptocurrency
                       </p>
-                      <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-600"}`}>USDC, USDT, DAI</p>
+                      <p
+                        className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                      >
+                        USDC, USDT, DAI
+                      </p>
                     </div>
                   </div>
                 </button>
@@ -508,8 +599,8 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
               <StripePaymentForm
                 plan={selectedPlan}
                 onSuccess={() => {
-                  onUpgrade(selectedPlan.name)
-                  setSelectedPlan(null)
+                  onUpgrade(selectedPlan.name);
+                  setSelectedPlan(null);
                 }}
                 onCancel={() => setSelectedPlan(null)}
                 darkMode={darkMode}
@@ -518,8 +609,8 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
               <CryptoPaymentForm
                 plan={selectedPlan}
                 onSuccess={() => {
-                  onUpgrade(selectedPlan.name)
-                  setSelectedPlan(null)
+                  onUpgrade(selectedPlan.name);
+                  setSelectedPlan(null);
                 }}
                 onCancel={() => setSelectedPlan(null)}
                 darkMode={darkMode}
@@ -528,7 +619,7 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -537,14 +628,21 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
         className={`${darkMode ? "bg-[#1E2A35]" : "bg-[#F9F6F2]"} rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-auto`}
       >
         {/* Header */}
-        <div className={`p-8 border-b ${darkMode ? "border-[#374151]" : "border-gray-200"}`}>
+        <div
+          className={`p-8 border-b ${darkMode ? "border-[#374151]" : "border-gray-200"}`}
+        >
           <div className="flex items-center justify-between">
             <div>
-              <h2 className={`text-3xl font-bold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+              <h2
+                className={`text-3xl font-bold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+              >
                 Choose Your Plan
               </h2>
-              <p className={`text-sm mt-2 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                Upgrade to unlock advanced features and scale your AI subscription management
+              <p
+                className={`text-sm mt-2 ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
+                Upgrade to unlock advanced features and scale your AI
+                subscription management
               </p>
             </div>
             <button
@@ -578,30 +676,44 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
                 )}
 
                 <div className="mb-6">
-                  <h3 className={`text-2xl font-bold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>
+                  <h3
+                    className={`text-2xl font-bold ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+                  >
                     {plan.displayName}
                   </h3>
                   <div className="mt-4 flex items-baseline gap-2">
                     {plan.price === 0 ? (
-                      <span className={`text-5xl font-bold ${darkMode ? "text-[#FFD166]" : "text-[#1E2A35]"}`}>
+                      <span
+                        className={`text-5xl font-bold ${darkMode ? "text-[#FFD166]" : "text-[#1E2A35]"}`}
+                      >
                         Free
                       </span>
                     ) : (
                       <>
-                        <span className={`text-5xl font-bold ${darkMode ? "text-[#FFD166]" : "text-[#1E2A35]"}`}>
+                        <span
+                          className={`text-5xl font-bold ${darkMode ? "text-[#FFD166]" : "text-[#1E2A35]"}`}
+                        >
                           ${plan.price}
                         </span>
-                        <span className={`text-lg ${darkMode ? "text-gray-400" : "text-gray-600"}`}>/month</span>
+                        <span
+                          className={`text-lg ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                        >
+                          /month
+                        </span>
                       </>
                     )}
                   </div>
                 </div>
 
-                <ul className="space-y-4 mb-8">
+                <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
                       <Check className="w-5 h-5 text-[#007A5C] flex-shrink-0 mt-0.5" />
-                      <span className={`text-sm ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}>{feature}</span>
+                      <span
+                        className={`text-sm ${darkMode ? "text-[#F9F6F2]" : "text-[#1E2A35]"}`}
+                      >
+                        {feature}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -628,23 +740,39 @@ export default function UpgradePlanModal({ currentPlan, onUpgrade, onClose, dark
           >
             <div className="flex items-center justify-center gap-8 flex-wrap">
               <div className="flex items-center gap-2">
-                <CreditCard className={`w-5 h-5 ${darkMode ? "text-gray-400" : "text-gray-600"}`} />
-                <span className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Stripe Payments</span>
+                <CreditCard
+                  className={`w-5 h-5 ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                />
+                <span
+                  className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
+                  Stripe Payments
+                </span>
               </div>
               <div className="flex items-center gap-2">
-                <Wallet className={`w-5 h-5 ${darkMode ? "text-gray-400" : "text-gray-600"}`} />
-                <span className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <Wallet
+                  className={`w-5 h-5 ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                />
+                <span
+                  className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Crypto: USDC, USDT, DAI
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className={`w-5 h-5 ${darkMode ? "text-gray-400" : "text-gray-600"}`} />
-                <span className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Secure & Encrypted</span>
+                <Shield
+                  className={`w-5 h-5 ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                />
+                <span
+                  className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
+                  Secure & Encrypted
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

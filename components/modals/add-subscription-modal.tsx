@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { X, Search, Plus } from "lucide-react"
+import { useState } from "react";
+import { X, Search, Plus } from "lucide-react";
 
 const allSubscriptions = [
   // AI Tools
@@ -307,13 +307,13 @@ const allSubscriptions = [
     logo: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg",
     tags: ["gaming", "entertainment"],
   },
-]
+];
 
 export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedTool, setSelectedTool] = useState(null)
-  const [customMode, setCustomMode] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState("All")
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTool, setSelectedTool] = useState(null);
+  const [customMode, setCustomMode] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [formData, setFormData] = useState({
     name: "",
     category: "AI Tools",
@@ -321,7 +321,7 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
     price: "",
     logo: "",
     tags: [],
-  })
+  });
 
   const categories = [
     "All",
@@ -333,19 +333,20 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
     "Finance",
     "Health",
     "Gaming",
-  ]
+  ];
 
   const filteredTools = allSubscriptions.filter((tool) => {
     const matchesSearch =
       tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       tool.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.subcategory.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = selectedCategory === "All" || tool.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+      tool.subcategory.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "All" || tool.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const handleSelectTool = (tool) => {
-    setSelectedTool(tool)
+    setSelectedTool(tool);
     setFormData({
       name: tool.name,
       category: tool.category,
@@ -353,11 +354,11 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
       price: tool.price.toString(),
       logo: tool.logo,
       tags: tool.tags,
-    })
-  }
+    });
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (formData.name && formData.price) {
       onAdd({
         ...formData,
@@ -366,9 +367,9 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
         status: "active",
         icon: formData.logo ? "🔗" : "🎨",
         color: "#000000",
-      })
+      });
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -379,10 +380,17 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
         <div className="bg-gradient-to-r from-[#1E2A35] to-[#2D3748] p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-white">Add Subscription</h2>
-              <p className="text-sm text-gray-300 mt-1">Track all your subscriptions in one place</p>
+              <h2 className="text-2xl font-bold text-white">
+                Add Subscription
+              </h2>
+              <p className="text-sm text-gray-300 mt-1">
+                Track all your subscriptions in one place
+              </p>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
               <X className="w-5 h-5 text-white" />
             </button>
           </div>
@@ -447,10 +455,16 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
                       />
                       <div className="flex-1 text-left">
                         <p className="font-semibold text-sm">{tool.name}</p>
-                        <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-600"}`}>{tool.subcategory}</p>
+                        <p
+                          className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-600"}`}
+                        >
+                          {tool.subcategory}
+                        </p>
                       </div>
                     </div>
-                    <p className="text-lg font-bold text-[#FFD166]">${tool.price}/mo</p>
+                    <p className="text-lg font-bold text-[#FFD166]">
+                      ${tool.price}/mo
+                    </p>
                   </button>
                 ))}
               </div>
@@ -459,7 +473,9 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
               <button
                 onClick={() => setCustomMode(true)}
                 className={`w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed ${
-                  darkMode ? "border-[#374151] hover:border-[#FFD166]" : "border-gray-300 hover:border-[#1E2A35]"
+                  darkMode
+                    ? "border-[#374151] hover:border-[#FFD166]"
+                    : "border-gray-300 hover:border-[#1E2A35]"
                 } rounded-lg transition-colors`}
               >
                 <Plus className="w-4 h-4" />
@@ -467,27 +483,35 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
               </button>
             </>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   Subscription Name
                 </label>
                 <input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   placeholder="e.g., Custom Tool"
                   className={`w-full px-4 py-3 ${darkMode ? "bg-[#1E2A35] border-[#374151]" : "bg-white border-gray-300"} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD166]`}
                 />
               </div>
 
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   Category
                 </label>
                 <select
                   value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, category: e.target.value })
+                  }
                   className={`w-full px-4 py-3 ${darkMode ? "bg-[#1E2A35] border-[#374151]" : "bg-white border-gray-300"} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD166]`}
                 >
                   {categories
@@ -501,27 +525,35 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
               </div>
 
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   Monthly Price ($)
                 </label>
                 <input
                   type="number"
                   step="0.01"
                   value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, price: e.target.value })
+                  }
                   placeholder="e.g., 20"
                   className={`w-full px-4 py-3 ${darkMode ? "bg-[#1E2A35] border-[#374151]" : "bg-white border-gray-300"} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD166]`}
                 />
               </div>
 
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   Logo URL (optional)
                 </label>
                 <input
                   type="url"
                   value={formData.logo}
-                  onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, logo: e.target.value })
+                  }
                   placeholder="https://example.com/logo.png"
                   className={`w-full px-4 py-3 ${darkMode ? "bg-[#1E2A35] border-[#374151]" : "bg-white border-gray-300"} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD166]`}
                 />
@@ -539,7 +571,9 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
         </div>
 
         {/* Footer */}
-        <div className={`p-6 border-t ${darkMode ? "border-[#374151]" : "border-gray-200"}`}>
+        <div
+          className={`p-6 border-t ${darkMode ? "border-[#374151]" : "border-gray-200"}`}
+        >
           <div className="flex gap-3">
             <button
               onClick={onClose}
@@ -561,7 +595,9 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
                         color: "#000000",
                       })
               }
-              disabled={customMode ? !formData.name || !formData.price : !selectedTool}
+              disabled={
+                customMode ? !formData.name || !formData.price : !selectedTool
+              }
               className="flex-1 px-4 py-3 bg-[#FFD166] text-[#1E2A35] rounded-lg font-semibold hover:bg-[#FFD166]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Add to Dashboard
@@ -570,5 +606,5 @@ export default function AddSubscriptionModal({ onAdd, onClose, darkMode }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

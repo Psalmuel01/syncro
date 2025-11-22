@@ -1,20 +1,38 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Users, Plus, Search, Trash2, TrendingUp, Activity, Mail, Briefcase, User, DollarSign } from "lucide-react"
-import { showToast } from "@/components/ui/toast"
+import { useState } from "react";
+import {
+  Users,
+  Plus,
+  Search,
+  Trash2,
+  TrendingUp,
+  Activity,
+  Mail,
+  Briefcase,
+  User,
+  DollarSign,
+} from "lucide-react";
+import { showToast } from "@/components/ui/toast";
 
 interface TeamsPageProps {
-  workspace: any
-  subscriptions: any[]
-  darkMode: boolean
-  emailAccounts: any[]
+  workspace: any;
+  subscriptions: any[];
+  darkMode: boolean;
+  emailAccounts: any[];
 }
 
-export default function TeamsPage({ workspace, subscriptions, darkMode, emailAccounts }: TeamsPageProps) {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeTab, setActiveTab] = useState<"members" | "usage" | "emails">("members")
-  const [showWorkEmailsOnly, setShowWorkEmailsOnly] = useState(true)
+export default function TeamsPage({
+  workspace,
+  subscriptions,
+  darkMode,
+  emailAccounts,
+}: TeamsPageProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<"members" | "usage" | "emails">(
+    "members",
+  );
+  const [showWorkEmailsOnly, setShowWorkEmailsOnly] = useState(true);
 
   const [teamSettings, setTeamSettings] = useState({
     spendingLimit: 1000,
@@ -23,7 +41,7 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
       Marketing: 300,
       Design: 200,
     },
-  })
+  });
 
   const [members, setMembers] = useState([
     {
@@ -41,11 +59,36 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         { email: "joy.anderson@gmail.com", isWorkEmail: false },
       ],
       subscriptions: [
-        { name: "ChatGPT Plus", usage: 450, lastUsed: "2 hours ago", email: "joy@cleanupcrew.com" },
-        { name: "Midjourney", usage: 320, lastUsed: "5 hours ago", email: "joy.anderson@gmail.com" },
-        { name: "Notion AI", usage: 180, lastUsed: "1 day ago", email: "joy@cleanupcrew.com" },
-        { name: "Gemini", usage: 95, lastUsed: "3 days ago", email: "joy.anderson@gmail.com" },
-        { name: "Perplexity Pro", usage: 67, lastUsed: "1 week ago", email: "joy@cleanupcrew.com" },
+        {
+          name: "ChatGPT Plus",
+          usage: 450,
+          lastUsed: "2 hours ago",
+          email: "joy@cleanupcrew.com",
+        },
+        {
+          name: "Midjourney",
+          usage: 320,
+          lastUsed: "5 hours ago",
+          email: "joy.anderson@gmail.com",
+        },
+        {
+          name: "Notion AI",
+          usage: 180,
+          lastUsed: "1 day ago",
+          email: "joy@cleanupcrew.com",
+        },
+        {
+          name: "Gemini",
+          usage: 95,
+          lastUsed: "3 days ago",
+          email: "joy.anderson@gmail.com",
+        },
+        {
+          name: "Perplexity Pro",
+          usage: 67,
+          lastUsed: "1 week ago",
+          email: "joy@cleanupcrew.com",
+        },
       ],
     },
     {
@@ -60,9 +103,24 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
       monthlySpend: 60,
       emailAccounts: [{ email: "naya@cleanupcrew.com", isWorkEmail: true }],
       subscriptions: [
-        { name: "ChatGPT Plus", usage: 280, lastUsed: "1 hour ago", email: "naya@cleanupcrew.com" },
-        { name: "Githubcopilot", usage: 520, lastUsed: "30 mins ago", email: "naya@cleanupcrew.com" },
-        { name: "Notion AI", usage: 145, lastUsed: "2 days ago", email: "naya@cleanupcrew.com" },
+        {
+          name: "ChatGPT Plus",
+          usage: 280,
+          lastUsed: "1 hour ago",
+          email: "naya@cleanupcrew.com",
+        },
+        {
+          name: "Githubcopilot",
+          usage: 520,
+          lastUsed: "30 mins ago",
+          email: "naya@cleanupcrew.com",
+        },
+        {
+          name: "Notion AI",
+          usage: 145,
+          lastUsed: "2 days ago",
+          email: "naya@cleanupcrew.com",
+        },
       ],
     },
     {
@@ -81,10 +139,30 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         { email: "mchen@contractor.io", isWorkEmail: false },
       ],
       subscriptions: [
-        { name: "Midjourney", usage: 680, lastUsed: "1 hour ago", email: "marcus@cleanupcrew.com" },
-        { name: "ChatGPT Plus", usage: 390, lastUsed: "3 hours ago", email: "marcus.chen@personal.com" },
-        { name: "Gemini", usage: 210, lastUsed: "1 day ago", email: "mchen@contractor.io" },
-        { name: "Perplexity Pro", usage: 125, lastUsed: "2 days ago", email: "marcus@cleanupcrew.com" },
+        {
+          name: "Midjourney",
+          usage: 680,
+          lastUsed: "1 hour ago",
+          email: "marcus@cleanupcrew.com",
+        },
+        {
+          name: "ChatGPT Plus",
+          usage: 390,
+          lastUsed: "3 hours ago",
+          email: "marcus.chen@personal.com",
+        },
+        {
+          name: "Gemini",
+          usage: 210,
+          lastUsed: "1 day ago",
+          email: "mchen@contractor.io",
+        },
+        {
+          name: "Perplexity Pro",
+          usage: 125,
+          lastUsed: "2 days ago",
+          email: "marcus@cleanupcrew.com",
+        },
       ],
     },
     {
@@ -100,23 +178,23 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
       emailAccounts: [],
       subscriptions: [],
     },
-  ])
+  ]);
 
-  const [showAddMember, setShowAddMember] = useState(false)
-  const [selectedMember, setSelectedMember] = useState<number | null>(null)
+  const [showAddMember, setShowAddMember] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<number | null>(null);
   const [newMember, setNewMember] = useState({
     name: "",
     email: "",
     role: "Member",
     department: "Engineering",
     permissions: ["view"],
-  })
+  });
 
   const filteredMembers = members.filter(
     (member) =>
       member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  );
 
   const handleAddMember = () => {
     if (newMember.name && newMember.email) {
@@ -131,89 +209,114 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
           emailAccounts: [],
           subscriptions: [],
         },
-      ])
-      setNewMember({ name: "", email: "", role: "Member", department: "Engineering", permissions: ["view"] })
-      setShowAddMember(false)
+      ]);
+      setNewMember({
+        name: "",
+        email: "",
+        role: "Member",
+        department: "Engineering",
+        permissions: ["view"],
+      });
+      setShowAddMember(false);
     }
-  }
+  };
 
   const handleMemberLeave = (memberId: number) => {
-    const member = members.find((m) => m.id === memberId)
-    if (!member) return
+    const member = members.find((m) => m.id === memberId);
+    if (!member) return;
 
     if (member.subscriptions.length === 0) {
       // No subscriptions, safe to delete
       const confirmDelete = window.confirm(
         `Remove ${member.name} from the team? They have no subscriptions to transfer.`,
-      )
+      );
 
       if (confirmDelete) {
-        setMembers(members.filter((m) => m.id !== memberId))
+        setMembers(members.filter((m) => m.id !== memberId));
       }
-      return
+      return;
     }
 
     // Show options for handling subscriptions
     const action = window.confirm(
       `${member.name} has ${member.subscriptions.length} subscription(s). Click OK to archive their data (keep for records), or Cancel to transfer to admin.`,
-    )
+    );
 
     if (action) {
       // Archive member (mark as inactive)
-      setMembers(members.map((m) => (m.id === memberId ? { ...m, status: "inactive", leftAt: new Date() } : m)))
+      setMembers(
+        members.map((m) =>
+          m.id === memberId
+            ? { ...m, status: "inactive", leftAt: new Date() }
+            : m,
+        ),
+      );
     } else {
       // Transfer subscriptions to admin
-      const admin = members.find((m) => m.role === "Admin")
+      const admin = members.find((m) => m.role === "Admin");
       if (admin) {
         // In real implementation, would transfer subscriptions
-        alert(`Subscriptions transferred to ${admin.name}`)
-        setMembers(members.filter((m) => m.id !== memberId))
+        alert(`Subscriptions transferred to ${admin.name}`);
+        setMembers(members.filter((m) => m.id !== memberId));
       }
     }
-  }
+  };
 
   const handleDeleteMember = (id: number) => {
-    const member = members.find((m) => m.id === id)
-    if (!member) return
+    const member = members.find((m) => m.id === id);
+    if (!member) return;
 
-    const adminCount = members.filter((m) => m.role === "Admin" && m.status === "active").length
+    const adminCount = members.filter(
+      (m) => m.role === "Admin" && m.status === "active",
+    ).length;
     if (member.role === "Admin" && adminCount === 1) {
       showToast({
         title: "Cannot remove last admin",
-        description: "You must have at least one admin in the team. Promote another member to admin first.",
+        description:
+          "You must have at least one admin in the team. Promote another member to admin first.",
         variant: "error",
-      })
-      return
+      });
+      return;
     }
 
-    handleMemberLeave(id)
-  }
+    handleMemberLeave(id);
+  };
 
   const handleChangeRole = (memberId: number, newRole: string) => {
-    const member = members.find((m) => m.id === memberId)
-    if (!member) return
+    const member = members.find((m) => m.id === memberId);
+    if (!member) return;
 
-    const adminCount = members.filter((m) => m.role === "Admin" && m.status === "active").length
+    const adminCount = members.filter(
+      (m) => m.role === "Admin" && m.status === "active",
+    ).length;
     if (member.role === "Admin" && newRole !== "Admin" && adminCount === 1) {
-      alert("Cannot change role: You must have at least one admin in the team. Promote another member to admin first.")
-      return
+      alert(
+        "Cannot change role: You must have at least one admin in the team. Promote another member to admin first.",
+      );
+      return;
     }
 
-    setMembers(members.map((m) => (m.id === memberId ? { ...m, role: newRole } : m)))
-  }
+    setMembers(
+      members.map((m) => (m.id === memberId ? { ...m, role: newRole } : m)),
+    );
+  };
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case "Admin":
-        return darkMode ? "bg-[#FFD166] text-[#1E2A35]" : "bg-[#FFD166] text-[#1E2A35]"
+        return darkMode
+          ? "bg-[#FFD166] text-[#1E2A35]"
+          : "bg-[#FFD166] text-[#1E2A35]";
       case "Billing Manager":
-        return darkMode ? "bg-[#007A5C] text-white" : "bg-[#007A5C] text-white"
+        return darkMode ? "bg-[#007A5C] text-white" : "bg-[#007A5C] text-white";
       case "Viewer":
-        return darkMode ? "bg-gray-500 text-white" : "bg-gray-500 text-white"
+        return darkMode ? "bg-gray-500 text-white" : "bg-gray-500 text-white";
       default:
-        return darkMode ? "bg-gray-700 text-gray-200" : "bg-gray-200 text-gray-700"
+        return darkMode
+          ? "bg-gray-700 text-gray-200"
+          : "bg-gray-200 text-gray-700";
     }
-  }
+  };
 
   const getStatusBadgeColor = (status: string) => {
     return status === "active"
@@ -222,49 +325,58 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         : "bg-[#007A5C] text-white"
       : darkMode
         ? "bg-gray-700 text-gray-300"
-        : "bg-gray-200 text-gray-600"
-  }
+        : "bg-gray-200 text-gray-600";
+  };
 
   const getFilteredEmailAccounts = (member) => {
     if (showWorkEmailsOnly) {
-      return member.emailAccounts.filter((acc) => acc.isWorkEmail)
+      return member.emailAccounts.filter((acc) => acc.isWorkEmail);
     }
-    return member.emailAccounts
-  }
+    return member.emailAccounts;
+  };
 
   const getFilteredSubscriptions = (member) => {
     if (showWorkEmailsOnly) {
-      const workEmails = member.emailAccounts.filter((acc) => acc.isWorkEmail).map((acc) => acc.email)
-      return member.subscriptions.filter((sub) => workEmails.includes(sub.email))
+      const workEmails = member.emailAccounts
+        .filter((acc) => acc.isWorkEmail)
+        .map((acc) => acc.email);
+      return member.subscriptions.filter((sub) =>
+        workEmails.includes(sub.email),
+      );
     }
-    return member.subscriptions
-  }
+    return member.subscriptions;
+  };
 
   const totalUsage = members.reduce((sum, member) => {
-    const filteredSubs = getFilteredSubscriptions(member)
-    return sum + filteredSubs.reduce((subSum, sub) => subSum + sub.usage, 0)
-  }, 0)
+    const filteredSubs = getFilteredSubscriptions(member);
+    return sum + filteredSubs.reduce((subSum, sub) => subSum + sub.usage, 0);
+  }, 0);
 
-  const totalEmailAccounts = members.reduce((sum, member) => sum + getFilteredEmailAccounts(member).length, 0)
+  const totalEmailAccounts = members.reduce(
+    (sum, member) => sum + getFilteredEmailAccounts(member).length,
+    0,
+  );
 
   const getDepartmentSpending = () => {
-    const spending = {}
+    const spending = {};
     members.forEach((member) => {
       if (!spending[member.department]) {
-        spending[member.department] = 0
+        spending[member.department] = 0;
       }
-      spending[member.department] += member.monthlySpend
-    })
-    return spending
-  }
+      spending[member.department] += member.monthlySpend;
+    });
+    return spending;
+  };
 
-  const departmentSpending = getDepartmentSpending()
+  const departmentSpending = getDepartmentSpending();
 
-  const totalDepartmentBudget = Object.values(teamSettings.departmentBudgets).reduce(
+  const totalDepartmentBudget = Object.values(
+    teamSettings.departmentBudgets,
+  ).reduce((sum: number, val: number) => sum + val, 0);
+  const totalDepartmentSpending = Object.values(departmentSpending).reduce(
     (sum: number, val: number) => sum + val,
     0,
-  )
-  const totalDepartmentSpending = Object.values(departmentSpending).reduce((sum: number, val: number) => sum + val, 0)
+  );
 
   return (
     <div className="space-y-6">
@@ -275,10 +387,14 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className={`text-xl font-bold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+              <h3
+                className={`text-xl font-bold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+              >
                 {workspace.name || "My Workspace"}
               </h3>
-              <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"} mt-1`}>
+              <p
+                className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"} mt-1`}
+              >
                 {workspace.domain || "workspace.com"}
               </p>
             </div>
@@ -298,12 +414,20 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Total Members</p>
-              <p className={`text-2xl font-bold mt-1 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+              <p
+                className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+              >
+                Total Members
+              </p>
+              <p
+                className={`text-2xl font-bold mt-1 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+              >
                 {members.length}
               </p>
             </div>
-            <Users className={`w-8 h-8 ${darkMode ? "text-[#FFD166]" : "text-[#FFD166]"}`} />
+            <Users
+              className={`w-8 h-8 ${darkMode ? "text-[#FFD166]" : "text-[#FFD166]"}`}
+            />
           </div>
         </div>
 
@@ -312,12 +436,20 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Email Accounts</p>
-              <p className={`text-2xl font-bold mt-1 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+              <p
+                className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+              >
+                Email Accounts
+              </p>
+              <p
+                className={`text-2xl font-bold mt-1 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+              >
                 {totalEmailAccounts}
               </p>
             </div>
-            <Mail className={`w-8 h-8 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`} />
+            <Mail
+              className={`w-8 h-8 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`}
+            />
           </div>
         </div>
 
@@ -326,12 +458,20 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Dept. Budget</p>
-              <p className={`text-2xl font-bold mt-1 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+              <p
+                className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+              >
+                Dept. Budget
+              </p>
+              <p
+                className={`text-2xl font-bold mt-1 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+              >
                 ${totalDepartmentBudget}
               </p>
             </div>
-            <Briefcase className={`w-8 h-8 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`} />
+            <Briefcase
+              className={`w-8 h-8 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`}
+            />
           </div>
         </div>
 
@@ -340,8 +480,14 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Dept. Spending</p>
-              <p className={`text-2xl font-bold mt-1 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+              <p
+                className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+              >
+                Dept. Spending
+              </p>
+              <p
+                className={`text-2xl font-bold mt-1 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+              >
                 ${totalDepartmentSpending}
               </p>
               <p
@@ -353,10 +499,16 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                       : "text-[#007A5C]"
                 }`}
               >
-                {((totalDepartmentSpending / totalDepartmentBudget) * 100).toFixed(0)}% of budget
+                {(
+                  (totalDepartmentSpending / totalDepartmentBudget) *
+                  100
+                ).toFixed(0)}
+                % of budget
               </p>
             </div>
-            <DollarSign className={`w-8 h-8 ${darkMode ? "text-[#E86A33]" : "text-[#E86A33]"}`} />
+            <DollarSign
+              className={`w-8 h-8 ${darkMode ? "text-[#E86A33]" : "text-[#E86A33]"}`}
+            />
           </div>
         </div>
 
@@ -365,12 +517,20 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Total Usage</p>
-              <p className={`text-2xl font-bold mt-1 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+              <p
+                className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+              >
+                Total Usage
+              </p>
+              <p
+                className={`text-2xl font-bold mt-1 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+              >
                 {totalUsage.toLocaleString()}
               </p>
             </div>
-            <Activity className={`w-8 h-8 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`} />
+            <Activity
+              className={`w-8 h-8 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`}
+            />
           </div>
         </div>
       </div>
@@ -423,12 +583,22 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         </div>
 
         <div className="flex items-center gap-2">
-          <Briefcase className={`w-4 h-4 ${darkMode ? "text-gray-400" : "text-gray-500"}`} />
-          <label className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-700"}`}>Work emails only</label>
+          <Briefcase
+            className={`w-4 h-4 ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+          />
+          <label
+            className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+          >
+            Work emails only
+          </label>
           <button
             onClick={() => setShowWorkEmailsOnly(!showWorkEmailsOnly)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              showWorkEmailsOnly ? "bg-[#007A5C]" : darkMode ? "bg-gray-700" : "bg-gray-300"
+              showWorkEmailsOnly
+                ? "bg-[#007A5C]"
+                : darkMode
+                  ? "bg-gray-700"
+                  : "bg-gray-300"
             }`}
           >
             <span
@@ -471,7 +641,9 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
           >
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className={`${darkMode ? "bg-[#1E2A35]" : "bg-[#F9F6F2]"}`}>
+                <thead
+                  className={`${darkMode ? "bg-[#1E2A35]" : "bg-[#F9F6F2]"}`}
+                >
                   <tr>
                     <th
                       className={`px-6 py-3 text-left text-xs font-medium ${darkMode ? "text-gray-300" : "text-gray-500"} uppercase tracking-wider`}
@@ -515,9 +687,14 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                     </th>
                   </tr>
                 </thead>
-                <tbody className={`${darkMode ? "divide-gray-700" : "divide-gray-200"} divide-y`}>
+                <tbody
+                  className={`${darkMode ? "divide-gray-700" : "divide-gray-200"} divide-y`}
+                >
                   {filteredMembers.map((member) => (
-                    <tr key={member.id} className={`${darkMode ? "hover:bg-[#374151]" : "hover:bg-[#F9F6F2]"}`}>
+                    <tr
+                      key={member.id}
+                      className={`${darkMode ? "hover:bg-[#374151]" : "hover:bg-[#F9F6F2]"}`}
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div
@@ -526,10 +703,14 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                             {member.name.charAt(0)}
                           </div>
                           <div className="ml-4">
-                            <div className={`text-sm font-medium ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+                            <div
+                              className={`text-sm font-medium ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+                            >
                               {member.name}
                             </div>
-                            <div className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                            <div
+                              className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                            >
                               {member.email}
                             </div>
                           </div>
@@ -543,7 +724,9 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-900"}`}>
+                        <span
+                          className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-900"}`}
+                        >
                           {member.department}
                         </span>
                       </td>
@@ -556,13 +739,20 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-1">
-                          <Mail className={`w-4 h-4 ${darkMode ? "text-gray-400" : "text-gray-500"}`} />
-                          <span className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-900"}`}>
+                          <Mail
+                            className={`w-4 h-4 ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                          />
+                          <span
+                            className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-900"}`}
+                          >
                             {getFilteredEmailAccounts(member).length}
                           </span>
-                          {showWorkEmailsOnly && getFilteredEmailAccounts(member).length > 0 && (
-                            <Briefcase className={`w-3 h-3 ml-1 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`} />
-                          )}
+                          {showWorkEmailsOnly &&
+                            getFilteredEmailAccounts(member).length > 0 && (
+                              <Briefcase
+                                className={`w-3 h-3 ml-1 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`}
+                              />
+                            )}
                         </div>
                       </td>
                       <td
@@ -601,7 +791,7 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
       )}
 
       {activeTab === "emails" && (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {members
             .filter((m) => getFilteredEmailAccounts(m).length > 0)
             .map((member) => (
@@ -617,22 +807,34 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                       {member.name.charAt(0)}
                     </div>
                     <div>
-                      <h3 className={`font-semibold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>{member.name}</h3>
-                      <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                      <h3
+                        className={`font-semibold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+                      >
+                        {member.name}
+                      </h3>
+                      <p
+                        className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                      >
                         {getFilteredEmailAccounts(member).length} email account
-                        {getFilteredEmailAccounts(member).length !== 1 ? "s" : ""}
+                        {getFilteredEmailAccounts(member).length !== 1
+                          ? "s"
+                          : ""}
                       </p>
                     </div>
                   </div>
-                  <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(member.role)}`}>
+                  <span
+                    className={`px-3 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(member.role)}`}
+                  >
                     {member.role}
                   </span>
                 </div>
 
                 <div className="space-y-3">
                   {getFilteredEmailAccounts(member).map((emailAccount, idx) => {
-                    const emailSubs = member.subscriptions.filter((sub) => sub.email === emailAccount.email)
-                    const emailSpend = emailSubs.length * 20
+                    const emailSubs = member.subscriptions.filter(
+                      (sub) => sub.email === emailAccount.email,
+                    );
+                    const emailSpend = emailSubs.length * 20;
                     return (
                       <div
                         key={idx}
@@ -641,11 +843,17 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
                             {emailAccount.isWorkEmail ? (
-                              <Briefcase className={`w-4 h-4 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`} />
+                              <Briefcase
+                                className={`w-4 h-4 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`}
+                              />
                             ) : (
-                              <User className={`w-4 h-4 ${darkMode ? "text-gray-400" : "text-gray-500"}`} />
+                              <User
+                                className={`w-4 h-4 ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                              />
                             )}
-                            <span className={`font-medium ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+                            <span
+                              className={`font-medium ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+                            >
                               {emailAccount.email}
                             </span>
                             {emailAccount.isWorkEmail && (
@@ -664,11 +872,16 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                             )}
                           </div>
                           <div className="text-right">
-                            <p className={`text-sm font-semibold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+                            <p
+                              className={`text-sm font-semibold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+                            >
                               ${emailSpend}/mo
                             </p>
-                            <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                              {emailSubs.length} subscription{emailSubs.length !== 1 ? "s" : ""}
+                            <p
+                              className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                            >
+                              {emailSubs.length} subscription
+                              {emailSubs.length !== 1 ? "s" : ""}
                             </p>
                           </div>
                         </div>
@@ -680,8 +893,16 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                                 key={subIdx}
                                 className={`flex items-center justify-between text-sm p-2 rounded ${darkMode ? "bg-[#2D3748]" : "bg-white"}`}
                               >
-                                <span className={darkMode ? "text-gray-300" : "text-gray-700"}>{sub.name}</span>
-                                <span className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                                <span
+                                  className={
+                                    darkMode ? "text-gray-300" : "text-gray-700"
+                                  }
+                                >
+                                  {sub.name}
+                                </span>
+                                <span
+                                  className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                                >
                                   {sub.usage} requests
                                 </span>
                               </div>
@@ -689,7 +910,7 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                           </div>
                         )}
                       </div>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -702,8 +923,8 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
           {members
             .filter((m) => m.status === "active")
             .map((member) => {
-              const filteredSubs = getFilteredSubscriptions(member)
-              if (filteredSubs.length === 0 && showWorkEmailsOnly) return null
+              const filteredSubs = getFilteredSubscriptions(member);
+              if (filteredSubs.length === 0 && showWorkEmailsOnly) return null;
 
               return (
                 <div
@@ -718,46 +939,78 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                         {member.name.charAt(0)}
                       </div>
                       <div>
-                        <h3 className={`font-semibold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>{member.name}</h3>
-                        <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>{member.email}</p>
+                        <h3
+                          className={`font-semibold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+                        >
+                          {member.name}
+                        </h3>
+                        <p
+                          className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                        >
+                          {member.email}
+                        </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                        {showWorkEmailsOnly ? "Work Email Usage" : "Total Usage"}
+                      <p
+                        className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                      >
+                        {showWorkEmailsOnly
+                          ? "Work Email Usage"
+                          : "Total Usage"}
                       </p>
-                      <p className={`text-xl font-bold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
-                        {filteredSubs.reduce((sum, sub) => sum + sub.usage, 0).toLocaleString()}
+                      <p
+                        className={`text-xl font-bold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+                      >
+                        {filteredSubs
+                          .reduce((sum, sub) => sum + sub.usage, 0)
+                          .toLocaleString()}
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     {filteredSubs.map((sub, idx) => {
-                      const emailAccount = member.emailAccounts.find((acc) => acc.email === sub.email)
+                      const emailAccount = member.emailAccounts.find(
+                        (acc) => acc.email === sub.email,
+                      );
                       return (
                         <div
                           key={idx}
                           className={`flex items-center justify-between p-3 rounded-lg ${darkMode ? "bg-[#1E2A35]" : "bg-[#F9F6F2]"}`}
                         >
                           <div className="flex-1">
-                            <p className={`font-medium ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>{sub.name}</p>
+                            <p
+                              className={`font-medium ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+                            >
+                              {sub.name}
+                            </p>
                             <div className="flex items-center gap-2 mt-1">
-                              <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                              <p
+                                className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                              >
                                 Last used: {sub.lastUsed}
                               </p>
                               {sub.email && (
                                 <>
-                                  <span className={`text-xs ${darkMode ? "text-gray-600" : "text-gray-300"}`}>•</span>
+                                  <span
+                                    className={`text-xs ${darkMode ? "text-gray-600" : "text-gray-300"}`}
+                                  >
+                                    •
+                                  </span>
                                   <div className="flex items-center gap-1">
                                     {emailAccount?.isWorkEmail ? (
                                       <Briefcase
                                         className={`w-3 h-3 ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`}
                                       />
                                     ) : (
-                                      <User className={`w-3 h-3 ${darkMode ? "text-gray-500" : "text-gray-400"}`} />
+                                      <User
+                                        className={`w-3 h-3 ${darkMode ? "text-gray-500" : "text-gray-400"}`}
+                                      />
                                     )}
-                                    <p className={`text-xs ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
+                                    <p
+                                      className={`text-xs ${darkMode ? "text-gray-500" : "text-gray-400"}`}
+                                    >
                                       {sub.email}
                                     </p>
                                   </div>
@@ -766,22 +1019,26 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className={`font-semibold ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`}>
+                            <p
+                              className={`font-semibold ${darkMode ? "text-[#007A5C]" : "text-[#007A5C]"}`}
+                            >
                               {sub.usage} requests
                             </p>
                             <div className="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full mt-1">
                               <div
                                 className="h-2 bg-[#007A5C] rounded-full"
-                                style={{ width: `${Math.min((sub.usage / 1000) * 100, 100)}%` }}
+                                style={{
+                                  width: `${Math.min((sub.usage / 1000) * 100, 100)}%`,
+                                }}
                               ></div>
                             </div>
                           </div>
                         </div>
-                      )
+                      );
                     })}
                   </div>
                 </div>
-              )
+              );
             })}
         </div>
       )}
@@ -789,40 +1046,58 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
       {/* Add Member Modal */}
       {showAddMember && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className={`${darkMode ? "bg-[#2D3748]" : "bg-white"} rounded-xl p-6 max-w-md w-full`}>
-            <h3 className={`text-xl font-bold mb-4 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>Add Team Member</h3>
-            <div className="space-y-4">
+          <div
+            className={`${darkMode ? "bg-[#2D3748]" : "bg-white"} rounded-xl p-6 max-w-md w-full`}
+          >
+            <h3
+              className={`text-xl font-bold mb-4 ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+            >
+              Add Team Member
+            </h3>
+            <div className="space-y-3">
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   Name
                 </label>
                 <input
                   type="text"
                   value={newMember.name}
-                  onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewMember({ ...newMember, name: e.target.value })
+                  }
                   className={`w-full px-4 py-2 ${darkMode ? "bg-[#1E2A35] border-gray-700 text-white" : "bg-white border-gray-200 text-[#1E2A35]"} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD166]`}
                   placeholder="Enter member name"
                 />
               </div>
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   Email
                 </label>
                 <input
                   type="email"
                   value={newMember.email}
-                  onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
+                  onChange={(e) =>
+                    setNewMember({ ...newMember, email: e.target.value })
+                  }
                   className={`w-full px-4 py-2 ${darkMode ? "bg-[#1E2A35] border-gray-700 text-white" : "bg-white border-gray-200 text-[#1E2A35]"} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD166]`}
                   placeholder="member@company.com"
                 />
               </div>
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   Role
                 </label>
                 <select
                   value={newMember.role}
-                  onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
+                  onChange={(e) =>
+                    setNewMember({ ...newMember, role: e.target.value })
+                  }
                   className={`w-full px-4 py-2 ${darkMode ? "bg-[#1E2A35] border-gray-700 text-white" : "bg-white border-gray-200 text-[#1E2A35]"} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD166]`}
                 >
                   <option value="Member">Member</option>
@@ -832,12 +1107,16 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
                 </select>
               </div>
               <div>
-                <label className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   Department
                 </label>
                 <select
                   value={newMember.department}
-                  onChange={(e) => setNewMember({ ...newMember, department: e.target.value })}
+                  onChange={(e) =>
+                    setNewMember({ ...newMember, department: e.target.value })
+                  }
                   className={`w-full px-4 py-2 ${darkMode ? "bg-[#1E2A35] border-gray-700 text-white" : "bg-white border-gray-200 text-[#1E2A35]"} border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFD166]`}
                 >
                   <option value="Engineering">Engineering</option>
@@ -865,5 +1144,5 @@ export default function TeamsPage({ workspace, subscriptions, darkMode, emailAcc
         </div>
       )}
     </div>
-  )
+  );
 }
