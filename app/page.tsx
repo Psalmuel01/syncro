@@ -56,6 +56,8 @@ import type { Currency } from "@/lib/currency-utils";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 export default function SubsyncApp() {
+  const [userProfile, setUserProfile] = useState(null);
+  const [walletInfo, setWalletInfo] = useState(null);
   const [mode, setMode] = useState<
     "welcome" | "individual" | "enterprise" | "enterprise-setup"
   >("welcome");
@@ -1727,6 +1729,13 @@ export default function SubsyncApp() {
       <>
         {/*<ReadyComponent />*/}
         <OnboardingModal
+          onProfileComplete={(data) => {
+            setUserProfile(data);
+            setWalletInfo({
+              address: data.walletAddress,
+              type: data.walletType,
+            });
+          }}
           onClose={() => setShowOnboarding(false)}
           onModeSelect={handleModeSelect}
           darkMode={darkMode}
@@ -1889,7 +1898,7 @@ export default function SubsyncApp() {
                 <div
                   className={`text-sm font-semibold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
                 >
-                  Caleb Alexhone
+                  {userProfile && userProfile.name}
                 </div>
                 <button
                   onClick={() => setShowUpgradePlan(true)}
@@ -2110,6 +2119,8 @@ export default function SubsyncApp() {
               {/* Page Content */}
               {activeView === "dashboard" && (
                 <DashboardPage
+                  userProfile={userProfile}
+                  walletInfo={walletInfo}
                   subscriptions={subscriptions}
                   totalSpend={totalSpend}
                   onViewInsights={handleViewInsights}

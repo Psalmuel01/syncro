@@ -13,7 +13,11 @@ import {
   Loader2,
 } from "lucide-react";
 
-export default function OnboardingModal({ onClose, onModeSelect }) {
+export default function OnboardingModal({
+  onClose,
+  onModeSelect,
+  onProfileComplete,
+}) {
   const [step, setStep] = useState(1);
 
   // Privy hooks
@@ -33,6 +37,13 @@ export default function OnboardingModal({ onClose, onModeSelect }) {
       recommendations: true,
     },
   });
+
+  // Auto-populate email from Privy user
+  useEffect(() => {
+    if (user?.email?.address && !formData.email) {
+      setFormData((prev) => ({ ...prev, email: user.email.address }));
+    }
+  }, [user, formData.email]);
 
   // Auto-advance to step 2 when wallet connects
   useEffect(() => {
@@ -80,6 +91,23 @@ export default function OnboardingModal({ onClose, onModeSelect }) {
 
   const handleModeSelection = (mode: "individual" | "enterprise") => {
     console.log("[Onboarding] Selected mode:", mode);
+
+    // Save profile data
+    const profileData = {
+      name: formData.name,
+      email: formData.email,
+      walletAddress: connectedWallet?.address,
+      walletType: connectedWallet?.walletClientType,
+      subscriptionCount: formData.subscriptionCount,
+      monthlySpend: formData.monthlySpend,
+      budgetLimit: formData.budgetLimit,
+      budgetAlert: formData.budgetAlert,
+      notifications: formData.notifications,
+      mode: mode,
+    };
+
+    // Pass profile data to parent
+    onProfileComplete?.(profileData);
     onModeSelect?.(mode);
     onClose?.();
   };
