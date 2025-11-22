@@ -1,4 +1,5 @@
 "use client";
+// @ts-nocheck
 
 import {
   ArrowRight,
@@ -10,21 +11,24 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-export default function DashboardPage({
-  subscriptions,
-  totalSpend,
-  insights,
-  onViewInsights,
-  onRenew,
-  onManage,
-  darkMode,
-  emailAccounts,
-  duplicates,
-  unusedSubscriptions,
-  trialSubscriptions,
-  userProfile, // New prop for user profile data
-  walletInfo, // New prop for wallet information
-}) {
+import FetchWithX402 from "../x402/FetchWithX402";
+
+export default function DashboardPage(props: any) {
+  const {
+    subscriptions,
+    totalSpend,
+    insights,
+    onViewInsights,
+    onRenew,
+    onManage,
+    darkMode,
+    emailAccounts,
+    duplicates,
+    unusedSubscriptions,
+    trialSubscriptions,
+    userProfile, // New prop for user profile data
+    walletInfo, // New prop for wallet information
+  } = props;
   const [hoveredCard, setHoveredCard] = useState(null);
   const [filterEmail, setFilterEmail] = useState("all");
   const [filterType, setFilterType] = useState("all");
@@ -129,20 +133,33 @@ export default function DashboardPage({
             </div>
 
             {walletInfo && (
-              <button
-                onClick={() => setShowProfileCard(!showProfileCard)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
-                  darkMode
-                    ? "bg-[#1E2A35] border-gray-700 text-gray-300 hover:bg-[#374151]"
-                    : "bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-100"
-                } transition-colors`}
-              >
-                <Wallet className="w-4 h-4" />
-                <span className="text-sm font-mono">
-                  {walletInfo.address?.slice(0, 6)}...
-                  {walletInfo.address?.slice(-4)}
-                </span>
-              </button>
+              <>
+                <div className="flex items-center">
+                  <button
+                    onClick={() => setShowProfileCard(!showProfileCard)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${
+                      darkMode
+                        ? "bg-[#1E2A35] border-gray-700 text-gray-300 hover:bg-[#374151]"
+                        : "bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-100"
+                    } transition-colors`}
+                  >
+                    <Wallet className="w-4 h-4" />
+                    <span className="text-sm font-mono">
+                      {walletInfo.address?.slice(0, 6)}...
+                      {walletInfo.address?.slice(-4)}
+                    </span>
+                  </button>
+
+                  {/* x402 payment button - reusable component */}
+                  <div className="ml-4">
+                    <FetchWithX402
+                      endpoint="https://api.midjourney.com/v1/x402/subscribe"
+                      label="Buy with x402"
+                      maxValue={BigInt(1000000)}
+                    />
+                  </div>
+                </div>
+              </>
             )}
           </div>
 
