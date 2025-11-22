@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect } from "react";
 import {
   Home,
   CreditCard,
@@ -15,69 +15,78 @@ import {
   X,
   Users,
   Download,
-} from "lucide-react"
-import WelcomePage from "@/components/pages/welcome"
-import EnterpriseSetup from "@/components/pages/enterprise-setup"
-import DashboardPage from "@/components/pages/dashboard"
-import SubscriptionsPage from "@/components/pages/subscriptions"
-import AnalyticsPage from "@/components/pages/analytics"
-import IntegrationsPage from "@/components/pages/integrations"
-import SettingsPage from "@/components/pages/settings"
-import TeamsPage from "@/components/pages/teams"
-import OnboardingModal from "@/components/modals/onboarding-modal"
-import AddSubscriptionModal from "@/components/modals/add-subscription-modal"
-import UpgradePlanModal from "@/components/modals/upgrade-plan-modal"
-import NotificationsPanel from "@/components/notifications-panel"
-import ManageSubscriptionModal from "@/components/modals/manage-subscription-modal"
-import InsightsModal from "@/components/modals/insights-modal"
-import InsightsPage from "@/components/pages/insights"
-import EditSubscriptionModal from "@/components/modals/edit-subscription-modal"
-import { Toast, ToastContainer } from "@/components/ui/toast"
-import { ConfirmationDialog } from "@/components/ui/confirmation-dialog"
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { validateSubscriptionData } from "@/lib/validation"
-import { generateSafeCSV, downloadCSV } from "@/lib/csv-utils"
-import { useUndoManager } from "@/hooks/use-undo-manager"
-import { EmptyState } from "@/components/ui/empty-state"
+} from "lucide-react";
+import WelcomePage from "@/components/pages/welcome";
+import EnterpriseSetup from "@/components/pages/enterprise-setup";
+import DashboardPage from "@/components/pages/dashboard";
+import SubscriptionsPage from "@/components/pages/subscriptions";
+import AnalyticsPage from "@/components/pages/analytics";
+import IntegrationsPage from "@/components/pages/integrations";
+import SettingsPage from "@/components/pages/settings";
+import TeamsPage from "@/components/pages/teams";
+import ReadyComponent from "./ready";
+import OnboardingModal from "@/components/modals/onboarding-modal";
+import AddSubscriptionModal from "@/components/modals/add-subscription-modal";
+import UpgradePlanModal from "@/components/modals/upgrade-plan-modal";
+import NotificationsPanel from "@/components/notifications-panel";
+import ManageSubscriptionModal from "@/components/modals/manage-subscription-modal";
+import InsightsModal from "@/components/modals/insights-modal";
+import InsightsPage from "@/components/pages/insights";
+import EditSubscriptionModal from "@/components/modals/edit-subscription-modal";
+import { Toast, ToastContainer } from "@/components/ui/toast";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { validateSubscriptionData } from "@/lib/validation";
+import { generateSafeCSV, downloadCSV } from "@/lib/csv-utils";
+import { useUndoManager } from "@/hooks/use-undo-manager";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   createSubscription,
   updateSubscription,
   deleteSubscription,
   bulkDeleteSubscriptions,
   type Subscription as DBSubscription,
-} from "@/lib/supabase/subscriptions"
-import { retryWithBackoff, getErrorMessage, isOnline } from "@/lib/network-utils"
-import type { Currency } from "@/lib/currency-utils"
-import { ErrorBoundary } from "@/components/ui/error-boundary"
+} from "@/lib/supabase/subscriptions";
+import {
+  retryWithBackoff,
+  getErrorMessage,
+  isOnline,
+} from "@/lib/network-utils";
+import type { Currency } from "@/lib/currency-utils";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 export default function SubsyncApp() {
-  const [mode, setMode] = useState<"welcome" | "individual" | "enterprise" | "enterprise-setup">("welcome")
-  const [accountType, setAccountType] = useState<"individual" | "team" | "enterprise">("individual")
-  const [workspace, setWorkspace] = useState<any>(null)
-  const [activeView, setActiveView] = useState("dashboard")
-  const [showOnboarding, setShowOnboarding] = useState(true)
-  const [showAddSubscription, setShowAddSubscription] = useState(false)
-  const [showUpgradePlan, setShowUpgradePlan] = useState(false)
-  const [showNotifications, setShowNotifications] = useState(false)
-  const [showManageSubscription, setShowManageSubscription] = useState(false)
-  const [showInsights, setShowInsights] = useState(false)
-  const [selectedSubscription, setSelectedSubscription] = useState(null)
-  const [currentPlan, setCurrentPlan] = useState("free")
-  const [darkMode, setDarkMode] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [selectedSubscriptions, setSelectedSubscriptions] = useState(new Set())
-  const [budgetLimit, setBudgetLimit] = useState(500)
+  const [mode, setMode] = useState<
+    "welcome" | "individual" | "enterprise" | "enterprise-setup"
+  >("welcome");
+  const [accountType, setAccountType] = useState<
+    "individual" | "team" | "enterprise"
+  >("individual");
+  const [workspace, setWorkspace] = useState<any>(null);
+  const [activeView, setActiveView] = useState("dashboard");
+  const [showOnboarding, setShowOnboarding] = useState(true);
+  const [showAddSubscription, setShowAddSubscription] = useState(false);
+  const [showUpgradePlan, setShowUpgradePlan] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showManageSubscription, setShowManageSubscription] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
+  const [selectedSubscription, setSelectedSubscription] = useState(null);
+  const [currentPlan, setCurrentPlan] = useState("free");
+  const [darkMode, setDarkMode] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedSubscriptions, setSelectedSubscriptions] = useState(new Set());
+  const [budgetLimit, setBudgetLimit] = useState(500);
   // const [history, setHistory] = useState([]) // REMOVED
   // const [historyIndex, setHistoryIndex] = useState(-1) // REMOVED
-  const [showInsightsPage, setShowInsightsPage] = useState(false)
-  const [showEditSubscription, setShowEditSubscription] = useState(false) // Declare the variable here
+  const [showInsightsPage, setShowInsightsPage] = useState(false);
+  const [showEditSubscription, setShowEditSubscription] = useState(false); // Declare the variable here
 
-  const [toasts, setToasts] = useState([])
-  const [confirmDialog, setConfirmDialog] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [bulkActionLoading, setBulkActionLoading] = useState(false)
+  const [toasts, setToasts] = useState([]);
+  const [confirmDialog, setConfirmDialog] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [bulkActionLoading, setBulkActionLoading] = useState(false);
 
-  const [operationTimeouts, setOperationTimeouts] = useState(new Map())
+  const [operationTimeouts, setOperationTimeouts] = useState(new Map());
 
   const [priceChanges, setPriceChanges] = useState([
     {
@@ -89,9 +98,9 @@ export default function SubsyncApp() {
       changeDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
       annualImpact: 18,
     },
-  ])
+  ]);
 
-  const [renewalReminders, setRenewalReminders] = useState([])
+  const [renewalReminders, setRenewalReminders] = useState([]);
   const [consolidationSuggestions, setConsolidationSuggestions] = useState([
     {
       id: 1,
@@ -102,7 +111,7 @@ export default function SubsyncApp() {
       bundleCost: 19.99,
       savings: 14.48,
     },
-  ])
+  ]);
 
   const [emailAccounts, setEmailAccounts] = useState([
     {
@@ -123,7 +132,7 @@ export default function SubsyncApp() {
       lastScanned: new Date(Date.now() - 5 * 60 * 1000),
       subscriptionCount: 2,
     },
-  ])
+  ]);
 
   const initialSubscriptions: DBSubscription[] = [
     {
@@ -356,12 +365,23 @@ export default function SubsyncApp() {
       pricingType: "variable",
       priceRange: { min: 15, max: 50 },
       priceHistory: [
-        { date: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(), amount: 18 },
-        { date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(), amount: 22 },
-        { date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), amount: 20 },
+        {
+          date: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+          amount: 18,
+        },
+        {
+          date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+          amount: 22,
+        },
+        {
+          date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          amount: 20,
+        },
       ],
       billingCycle: "monthly",
-      cancelledAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      cancelledAt: new Date(
+        Date.now() - 10 * 24 * 60 * 60 * 1000,
+      ).toISOString(),
       activeUntil: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
@@ -428,7 +448,7 @@ export default function SubsyncApp() {
       pricingType: "fixed",
       billingCycle: "lifetime",
     },
-  ]
+  ];
 
   const {
     currentState: subscriptions,
@@ -438,62 +458,63 @@ export default function SubsyncApp() {
     canUndo,
     canRedo,
     historySize,
-  } = useUndoManager(initialSubscriptions)
+  } = useUndoManager(initialSubscriptions);
 
-  const [isLoadingSubscriptions, setIsLoadingSubscriptions] = useState(true)
+  const [isLoadingSubscriptions, setIsLoadingSubscriptions] = useState(true);
 
-  const [currency, setCurrency] = useState<Currency>("USD")
-  const [isOffline, setIsOffline] = useState(false)
+  const [currency, setCurrency] = useState<Currency>("USD");
+  const [isOffline, setIsOffline] = useState(false);
 
   // Simulated initial loading, removing actual database fetch
   useEffect(() => {
-    setIsLoadingSubscriptions(false)
-  }, [])
+    setIsLoadingSubscriptions(false);
+  }, []);
 
   useEffect(() => {
     function handleOnline() {
-      setIsOffline(false)
+      setIsOffline(false);
       showToast({
         title: "Back online",
         description: "Your connection has been restored",
         variant: "success",
-      })
+      });
     }
 
     function handleOffline() {
-      setIsOffline(true)
+      setIsOffline(true);
       showToast({
         title: "You're offline",
         description: "Some features may not work until you reconnect",
         variant: "error",
-      })
+      });
     }
 
-    window.addEventListener("online", handleOnline)
-    window.addEventListener("offline", handleOffline)
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
-    setIsOffline(!isOnline())
+    setIsOffline(!isOnline());
 
     return () => {
-      window.removeEventListener("online", handleOnline)
-      window.removeEventListener("offline", handleOffline)
-    }
-  }, [])
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   // Update subscriptions and add to history
   const updateSubscriptions = useCallback(
     (newSubs: any[]) => {
       // setSubscriptions(newSubs) // REMOVED
-      addToHistory(newSubs)
+      addToHistory(newSubs);
     },
     [addToHistory],
-  )
+  );
 
   const [notifications, setNotifications] = useState([
     {
       id: 1,
       title: "Duplicate Subscription Detected",
-      description: "You have 2 ChatGPT Plus accounts across different emails - Potential savings: $20/month",
+      description:
+        "You have 2 ChatGPT Plus accounts across different emails - Potential savings: $20/month",
       type: "duplicate",
       read: false,
       duplicateInfo: {
@@ -506,7 +527,8 @@ export default function SubsyncApp() {
     {
       id: 2,
       title: "Unused AI Tool",
-      description: "Midjourney hasn't been used in 35 days - Consider canceling to save $30/month",
+      description:
+        "Midjourney hasn't been used in 35 days - Consider canceling to save $30/month",
       type: "unused",
       read: false,
       subscriptionId: 7,
@@ -514,14 +536,16 @@ export default function SubsyncApp() {
     {
       id: 3,
       title: "Spend Increases",
-      description: "Your spend increased 18% this month - mostly from image generation tools",
+      description:
+        "Your spend increased 18% this month - mostly from image generation tools",
       type: "info",
       read: false,
     },
     {
       id: 4,
       title: "New Detection",
-      description: "We detected a new Perplexity Pro subscription in your email",
+      description:
+        "We detected a new Perplexity Pro subscription in your email",
       type: "alert",
       read: false,
       detectedSubscription: {
@@ -538,57 +562,72 @@ export default function SubsyncApp() {
         emailAccountId: 1,
       },
     },
-  ])
+  ]);
 
   const [integrations, setIntegrations] = useState([
-    { id: 1, name: "Gmail", type: "Email Integration", status: "connected", lastSync: "2 minutes ago", accounts: 2 },
-    { id: 3, name: "Manual tools", type: "Self-managed", status: "connected", lastSync: "2 minutes ago", accounts: 0 },
-  ])
+    {
+      id: 1,
+      name: "Gmail",
+      type: "Email Integration",
+      status: "connected",
+      lastSync: "2 minutes ago",
+      accounts: 2,
+    },
+    {
+      id: 3,
+      name: "Manual tools",
+      type: "Self-managed",
+      status: "connected",
+      lastSync: "2 minutes ago",
+      accounts: 0,
+    },
+  ]);
 
   const handleModeSelect = (selectedMode: "individual" | "enterprise") => {
     if (selectedMode === "individual") {
-      setMode("individual")
-      setAccountType("individual")
+      setMode("individual");
+      setAccountType("individual");
     } else {
-      setMode("enterprise-setup")
-      setAccountType("enterprise")
+      setMode("enterprise-setup");
+      setAccountType("enterprise");
     }
-  }
+  };
 
   const handleEnterpriseSetupComplete = (workspaceData: any) => {
-    setWorkspace(workspaceData)
-    setMode("enterprise")
-    setCurrentPlan("enterprise")
-    setAccountType("enterprise")
-  }
+    setWorkspace(workspaceData);
+    setMode("enterprise");
+    setCurrentPlan("enterprise");
+    setAccountType("enterprise");
+  };
 
   const handleBackToWelcome = () => {
-    setMode("welcome")
-  }
+    setMode("welcome");
+  };
 
   const handleUpgradeToTeam = (workspaceData: any) => {
-    setWorkspace(workspaceData)
-    setAccountType("team")
-    setCurrentPlan("team")
+    setWorkspace(workspaceData);
+    setAccountType("team");
+    setCurrentPlan("team");
     showToast({
       title: "Team account created!",
       description: `Welcome to ${workspaceData.name}. Invitations have been sent to your team members.`,
       variant: "success",
-    })
-  }
+    });
+  };
 
-  const maxSubscriptions = currentPlan === "free" ? 5 : currentPlan === "pro" ? 20 : 100
+  const maxSubscriptions =
+    currentPlan === "free" ? 5 : currentPlan === "pro" ? 20 : 100;
   const recurringSpend = subscriptions
     .filter((sub) => sub.billingCycle !== "lifetime" && sub.status === "active")
-    .reduce((sum, sub) => sum + sub.price, 0)
+    .reduce((sum, sub) => sum + sub.price, 0);
   const totalSpend = subscriptions
     .filter((sub) => sub.status === "active" || sub.status === "cancelled")
     .reduce((sum, sub) => {
       if (sub.billingCycle === "lifetime") {
-        return sum
+        return sum;
       }
-      return sum + sub.price
-    }, 0)
+      return sum + sub.price;
+    }, 0);
 
   // REMOVED: addToHistory, undo, redo
   // const addToHistory = useCallback(
@@ -618,9 +657,9 @@ export default function SubsyncApp() {
   const checkRenewalReminders = () => {
     const reminders = subscriptions
       .filter((sub) => {
-        if (sub.status !== "active") return false
-        const daysUntilRenewal = sub.renewsIn || 0
-        return daysUntilRenewal <= 3 && daysUntilRenewal >= 0
+        if (sub.status !== "active") return false;
+        const daysUntilRenewal = sub.renewsIn || 0;
+        return daysUntilRenewal <= 3 && daysUntilRenewal >= 0;
       })
       .map((sub) => ({
         id: sub.id,
@@ -628,78 +667,80 @@ export default function SubsyncApp() {
         price: sub.price,
         renewsIn: sub.renewsIn,
         renewalDate: new Date(Date.now() + sub.renewsIn * 24 * 60 * 60 * 1000),
-      }))
+      }));
 
-    setRenewalReminders(reminders)
-  }
+    setRenewalReminders(reminders);
+  };
 
   const checkBudgetAlerts = () => {
-    const percentage = (totalSpend / budgetLimit) * 100
+    const percentage = (totalSpend / budgetLimit) * 100;
 
     if (percentage >= 100) {
       return {
         level: "critical",
         message: `You've exceeded your $${budgetLimit} budget by $${(totalSpend - budgetLimit).toFixed(2)}`,
         percentage: percentage.toFixed(0),
-      }
+      };
     } else if (percentage >= 80) {
       return {
         level: "warning",
         message: `You've used ${percentage.toFixed(0)}% of your $${budgetLimit} budget`,
         percentage: percentage.toFixed(0),
-      }
+      };
     }
 
-    return null
-  }
+    return null;
+  };
 
   useEffect(() => {
-    checkRenewalReminders()
-  }, [subscriptions])
+    checkRenewalReminders();
+  }, [subscriptions]);
 
-  const budgetAlert = checkBudgetAlerts()
+  const budgetAlert = checkBudgetAlerts();
 
   const checkDuplicate = (name) => {
-    return subscriptions.some((sub) => sub.name.toLowerCase() === name.toLowerCase())
-  }
+    return subscriptions.some(
+      (sub) => sub.name.toLowerCase() === name.toLowerCase(),
+    );
+  };
 
   const handleManageSubscription = (subscription) => {
-    setSelectedSubscription(subscription)
-    setShowManageSubscription(true)
-  }
+    setSelectedSubscription(subscription);
+    setShowManageSubscription(true);
+  };
 
   const handleRenewSubscription = (subscription) => {
     if (subscription.renewalUrl) {
-      window.open(subscription.renewalUrl, "_blank")
+      window.open(subscription.renewalUrl, "_blank");
     }
-  }
+  };
 
   const handleViewInsights = () => {
-    setShowInsightsPage(true)
-  }
+    setShowInsightsPage(true);
+  };
 
   const showToast = useCallback((toast) => {
-    const id = Date.now()
-    setToasts((prev) => [...prev, { ...toast, id }])
+    const id = Date.now();
+    setToasts((prev) => [...prev, { ...toast, id }]);
     setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id))
-    }, 5000)
-  }, [])
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 5000);
+  }, []);
 
   const removeToast = useCallback((id) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id))
-  }, [])
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
 
   const handleAddSubscription = async (newSub) => {
-    const validation = validateSubscriptionData(newSub)
+    const validation = validateSubscriptionData(newSub);
     if (!validation.isValid) {
-      const firstError = Object.values(validation.errors)[0]
+      const firstError = Object.values(validation.errors)[0];
       showToast({
         title: "Validation error",
         description: firstError,
         variant: "error",
-      })
-      return
+      });
+      return;
     }
 
     if (checkDuplicate(newSub.name)) {
@@ -707,16 +748,16 @@ export default function SubsyncApp() {
         title: "Duplicate subscription",
         description: `${newSub.name} already exists in your subscriptions`,
         variant: "error",
-      })
-      return
+      });
+      return;
     }
 
     if (subscriptions.length >= maxSubscriptions) {
-      setShowUpgradePlan(true)
-      return
+      setShowUpgradePlan(true);
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
       const dbSubscription = await retryWithBackoff(async () => {
@@ -742,8 +783,8 @@ export default function SubsyncApp() {
           editedFields: [],
           pricingType: "fixed",
           billingCycle: "monthly",
-        })
-      })
+        });
+      });
 
       // Convert to app format and add to local state
       const formattedSub = {
@@ -769,11 +810,11 @@ export default function SubsyncApp() {
         editedFields: dbSubscription.edited_fields,
         pricingType: dbSubscription.pricing_type,
         billingCycle: dbSubscription.billing_cycle,
-      }
+      };
 
-      const updatedSubs = [...subscriptions, formattedSub]
-      updateSubscriptions(updatedSubs)
-      setShowAddSubscription(false)
+      const updatedSubs = [...subscriptions, formattedSub];
+      updateSubscriptions(updatedSubs);
+      setShowAddSubscription(false);
 
       showToast({
         title: "Subscription added",
@@ -783,25 +824,25 @@ export default function SubsyncApp() {
           label: "Undo",
           onClick: async () => {
             try {
-              await deleteSubscription(dbSubscription.id)
-              undo()
+              await deleteSubscription(dbSubscription.id);
+              undo();
               showToast({
                 title: "Undone",
                 description: "Subscription addition has been undone",
                 variant: "default",
-              })
+              });
             } catch (error) {
               showToast({
                 title: "Error",
                 description: "Failed to undo subscription addition",
                 variant: "error",
-              })
+              });
             }
           },
         },
-      })
+      });
     } catch (error) {
-      const errorMessage = getErrorMessage(error)
+      const errorMessage = getErrorMessage(error);
       showToast({
         title: "Error",
         description: errorMessage,
@@ -810,15 +851,15 @@ export default function SubsyncApp() {
           label: "Retry",
           onClick: () => handleAddSubscription(newSub),
         },
-      })
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleDeleteSubscription = (id) => {
-    const sub = subscriptions.find((s) => s.id === id)
-    if (!sub) return
+    const sub = subscriptions.find((s) => s.id === id);
+    if (!sub) return;
 
     setConfirmDialog({
       title: "Delete subscription?",
@@ -827,28 +868,28 @@ export default function SubsyncApp() {
       confirmLabel: "Delete",
       onConfirm: async () => {
         try {
-          await deleteSubscription(id)
+          await deleteSubscription(id);
 
-          const updatedSubs = subscriptions.filter((s) => s.id !== id)
-          updateSubscriptions(updatedSubs)
-          setConfirmDialog(null)
+          const updatedSubs = subscriptions.filter((s) => s.id !== id);
+          updateSubscriptions(updatedSubs);
+          setConfirmDialog(null);
 
           showToast({
             title: "Subscription deleted",
             description: `${sub.name} has been removed`,
             variant: "success",
-          })
+          });
         } catch (error) {
           showToast({
             title: "Error",
             description: "Failed to delete subscription",
             variant: "error",
-          })
+          });
         }
       },
       onCancel: () => setConfirmDialog(null),
-    })
-  }
+    });
+  };
 
   const handleBulkDelete = () => {
     if (selectedSubscriptions.size === 0) {
@@ -856,8 +897,8 @@ export default function SubsyncApp() {
         title: "No subscriptions selected",
         description: "Please select at least one subscription to delete",
         variant: "error",
-      })
-      return
+      });
+      return;
     }
 
     setConfirmDialog({
@@ -866,38 +907,40 @@ export default function SubsyncApp() {
       variant: "danger",
       confirmLabel: "Delete All",
       onConfirm: async () => {
-        setBulkActionLoading(true)
-        setConfirmDialog(null)
+        setBulkActionLoading(true);
+        setConfirmDialog(null);
 
         try {
-          const selectedIds = Array.from(selectedSubscriptions) as number[]
+          const selectedIds = Array.from(selectedSubscriptions) as number[];
 
-          await bulkDeleteSubscriptions(selectedIds)
+          await bulkDeleteSubscriptions(selectedIds);
 
-          const updatedSubs = subscriptions.filter((sub) => !selectedIds.includes(sub.id))
-          updateSubscriptions(updatedSubs)
-          addToHistory(updatedSubs)
+          const updatedSubs = subscriptions.filter(
+            (sub) => !selectedIds.includes(sub.id),
+          );
+          updateSubscriptions(updatedSubs);
+          addToHistory(updatedSubs);
 
-          setSelectedSubscriptions(new Set())
+          setSelectedSubscriptions(new Set());
 
           showToast({
             title: "All subscriptions deleted",
             description: `Successfully deleted ${selectedIds.length} subscription(s)`,
             variant: "success",
-          })
+          });
         } catch (error) {
           showToast({
             title: "Error",
             description: "Failed to delete subscriptions",
             variant: "error",
-          })
+          });
         } finally {
-          setBulkActionLoading(false)
+          setBulkActionLoading(false);
         }
       },
       onCancel: () => setConfirmDialog(null),
-    })
-  }
+    });
+  };
 
   const handleBulkExport = () => {
     if (selectedSubscriptions.size === 0) {
@@ -905,13 +948,23 @@ export default function SubsyncApp() {
         title: "No subscriptions selected",
         description: "Please select at least one subscription to export",
         variant: "error",
-      })
-      return
+      });
+      return;
     }
 
-    const selectedSubs = subscriptions.filter((sub) => selectedSubscriptions.has(sub.id))
+    const selectedSubs = subscriptions.filter((sub) =>
+      selectedSubscriptions.has(sub.id),
+    );
 
-    const headers = ["Name", "Category", "Price", "Billing Cycle", "Status", "Renewal Date", "Email"]
+    const headers = [
+      "Name",
+      "Category",
+      "Price",
+      "Billing Cycle",
+      "Status",
+      "Renewal Date",
+      "Email",
+    ];
     const rows = selectedSubs.map((sub) => [
       sub.name,
       sub.category,
@@ -920,39 +973,39 @@ export default function SubsyncApp() {
       sub.status,
       sub.renewsIn ? `${sub.renewsIn} days` : "N/A",
       sub.email || "N/A",
-    ])
+    ]);
 
-    const csvContent = generateSafeCSV(headers, rows)
-    downloadCSV(csvContent, "subscriptions-export")
+    const csvContent = generateSafeCSV(headers, rows);
+    downloadCSV(csvContent, "subscriptions-export");
 
     showToast({
       title: "Export successful",
       description: `${selectedSubs.length} subscription(s) exported to CSV`,
       variant: "success",
-    })
-  }
+    });
+  };
 
   const withTimeout = async (promise: Promise<any>, timeoutMs = 30000) => {
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error("Operation timed out")), timeoutMs)
-    })
+      setTimeout(() => reject(new Error("Operation timed out")), timeoutMs);
+    });
 
     try {
-      return await Promise.race([promise, timeoutPromise])
+      return await Promise.race([promise, timeoutPromise]);
     } catch (error) {
       if (error.message === "Operation timed out") {
         showToast({
           title: "Operation timed out",
           description: "The operation took too long. Please try again.",
           variant: "error",
-        })
+        });
       }
-      throw error
+      throw error;
     }
-  }
+  };
 
   const handleBulkCancel = () => {
-    if (selectedSubscriptions.size === 0) return
+    if (selectedSubscriptions.size === 0) return;
 
     setConfirmDialog({
       title: "Cancel selected subscriptions?",
@@ -960,67 +1013,71 @@ export default function SubsyncApp() {
       variant: "warning",
       confirmLabel: "Cancel All",
       onConfirm: async () => {
-        setBulkActionLoading(true)
-        setConfirmDialog(null)
+        setBulkActionLoading(true);
+        setConfirmDialog(null);
 
         try {
-          const selectedIds = Array.from(selectedSubscriptions) as number[]
+          const selectedIds = Array.from(selectedSubscriptions) as number[];
 
           for (const id of selectedIds) {
-            const sub = subscriptions.find((s) => s.id === id)
+            const sub = subscriptions.find((s) => s.id === id);
             if (sub) {
-              const daysUntilRenewal = sub.renewsIn || 0
-              const activeUntil = new Date(Date.now() + daysUntilRenewal * 24 * 60 * 60 * 1000)
+              const daysUntilRenewal = sub.renewsIn || 0;
+              const activeUntil = new Date(
+                Date.now() + daysUntilRenewal * 24 * 60 * 60 * 1000,
+              );
 
               await updateSubscription(id, {
                 status: "cancelled",
                 cancelled_at: new Date().toISOString(),
                 active_until: activeUntil.toISOString(),
-              })
+              });
             }
           }
 
           const updatedSubs = subscriptions.map((sub) => {
             if (selectedSubscriptions.has(sub.id)) {
-              const daysUntilRenewal = sub.renewsIn || 0
-              const activeUntil = new Date(Date.now() + daysUntilRenewal * 24 * 60 * 60 * 1000)
+              const daysUntilRenewal = sub.renewsIn || 0;
+              const activeUntil = new Date(
+                Date.now() + daysUntilRenewal * 24 * 60 * 60 * 1000,
+              );
               return {
                 ...sub,
                 status: "cancelled",
                 cancelledAt: new Date().toISOString(),
                 activeUntil: activeUntil.toISOString(),
-              }
+              };
             }
-            return sub
-          })
+            return sub;
+          });
 
-          updateSubscriptions(updatedSubs)
-          addToHistory(updatedSubs)
+          updateSubscriptions(updatedSubs);
+          addToHistory(updatedSubs);
 
-          const count = selectedSubscriptions.size
-          setSelectedSubscriptions(new Set())
+          const count = selectedSubscriptions.size;
+          setSelectedSubscriptions(new Set());
 
           showToast({
             title: "Subscriptions cancelled",
             description: `${count} subscription(s) have been cancelled`,
             variant: "success",
-          })
+          });
         } catch (error) {
           showToast({
             title: "Error",
             description: "Failed to cancel subscriptions",
             variant: "error",
-          })
+          });
         } finally {
-          setBulkActionLoading(false)
+          setBulkActionLoading(false);
         }
       },
       onCancel: () => setConfirmDialog(null),
-    })
-  }
+    });
+  };
 
   const handleBulkPause = () => {
-    if (selectedSubscriptions.size === 0) return
+    if (selectedSubscriptions.size === 0) return;
 
     setConfirmDialog({
       title: "Pause selected subscriptions?",
@@ -1028,18 +1085,20 @@ export default function SubsyncApp() {
       variant: "warning",
       confirmLabel: "Pause All",
       onConfirm: async () => {
-        setBulkActionLoading(true)
-        setConfirmDialog(null)
+        setBulkActionLoading(true);
+        setConfirmDialog(null);
 
         try {
-          const selectedIds = Array.from(selectedSubscriptions) as number[]
+          const selectedIds = Array.from(selectedSubscriptions) as number[];
 
           for (const id of selectedIds) {
             await updateSubscription(id, {
               status: "paused",
               paused_at: new Date().toISOString(),
-              resumes_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            })
+              resumes_at: new Date(
+                Date.now() + 30 * 24 * 60 * 60 * 1000,
+              ).toISOString(),
+            });
           }
 
           const updatedSubs = subscriptions.map((sub) => {
@@ -1048,46 +1107,48 @@ export default function SubsyncApp() {
                 ...sub,
                 status: "paused",
                 pausedAt: new Date().toISOString(),
-                resumesAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-              }
+                resumesAt: new Date(
+                  Date.now() + 30 * 24 * 60 * 60 * 1000,
+                ).toISOString(),
+              };
             }
-            return sub
-          })
+            return sub;
+          });
 
-          updateSubscriptions(updatedSubs)
-          addToHistory(updatedSubs)
+          updateSubscriptions(updatedSubs);
+          addToHistory(updatedSubs);
 
-          const count = selectedSubscriptions.size
-          setSelectedSubscriptions(new Set())
+          const count = selectedSubscriptions.size;
+          setSelectedSubscriptions(new Set());
 
           showToast({
             title: "Subscriptions paused",
             description: `${count} subscription(s) have been paused for 30 days`,
             variant: "success",
-          })
+          });
         } catch (error) {
           showToast({
             title: "Error",
             description: "Failed to pause subscriptions",
             variant: "error",
-          })
+          });
         } finally {
-          setBulkActionLoading(false)
+          setBulkActionLoading(false);
         }
       },
       onCancel: () => setConfirmDialog(null),
-    })
-  }
+    });
+  };
 
   const handleAddFromNotification = (subscription) => {
     if (checkDuplicate(subscription.name)) {
-      alert(`${subscription.name} already exists in your subscriptions!`)
-      return
+      alert(`${subscription.name} already exists in your subscriptions!`);
+      return;
     }
 
     if (subscriptions.length >= maxSubscriptions) {
-      setShowUpgradePlan(true)
-      return
+      setShowUpgradePlan(true);
+      return;
     }
 
     const updatedSubs = [
@@ -1096,46 +1157,55 @@ export default function SubsyncApp() {
         ...subscription,
         id: Math.max(...subscriptions.map((s) => s.id), 0) + 1,
         dateAdded: new Date().toISOString(), // Store dates in UTC
-        emailAccountId: subscription.emailAccountId || emailAccounts.find((acc) => acc.isPrimary)?.id || 1,
+        emailAccountId:
+          subscription.emailAccountId ||
+          emailAccounts.find((acc) => acc.isPrimary)?.id ||
+          1,
         source: "manual",
         manuallyEdited: false,
         editedFields: [],
         pricingType: "fixed",
         billingCycle: "monthly",
       },
-    ]
+    ];
     // setSubscriptions(updatedSubs) // REMOVED
-    updateSubscriptions(updatedSubs) // USING NEW HELPER
-    addToHistory(updatedSubs) // Add this action to history
-  }
+    updateSubscriptions(updatedSubs); // USING NEW HELPER
+    addToHistory(updatedSubs); // Add this action to history
+  };
 
   const handleRemoveEmailAccount = (id: number) => {
-    const emailToRemove = emailAccounts.find((acc) => acc.id === id)
+    const emailToRemove = emailAccounts.find((acc) => acc.id === id);
 
-    if (!emailToRemove) return
+    if (!emailToRemove) return;
 
     // Prevent deletion of primary email
     if (emailToRemove.isPrimary) {
-      const otherEmails = emailAccounts.filter((acc) => acc.id !== id)
+      const otherEmails = emailAccounts.filter((acc) => acc.id !== id);
 
       if (otherEmails.length === 0) {
-        alert("Cannot delete your last email account. You need at least one email to track subscriptions.")
-        return
+        alert(
+          "Cannot delete your last email account. You need at least one email to track subscriptions.",
+        );
+        return;
       }
 
-      alert("Cannot delete primary email. Please set another email as primary first.")
-      return
+      alert(
+        "Cannot delete primary email. Please set another email as primary first.",
+      );
+      return;
     }
 
     // Mark subscriptions from this email as "source_removed"
-    const affectedSubscriptions = subscriptions.filter((sub) => sub.emailAccountId === id)
+    const affectedSubscriptions = subscriptions.filter(
+      (sub) => sub.emailAccountId === id,
+    );
 
     if (affectedSubscriptions.length > 0) {
       const confirmDelete = window.confirm(
         `This email has ${affectedSubscriptions.length} subscription(s). These will be marked as "source removed" but kept for your records. Continue?`,
-      )
+      );
 
-      if (!confirmDelete) return
+      if (!confirmDelete) return;
 
       // Update subscriptions to mark as source_removed
       const updatedSubs = subscriptions.map((sub) =>
@@ -1146,107 +1216,119 @@ export default function SubsyncApp() {
               statusNote: `Email ${emailToRemove.email} was disconnected on ${new Date().toLocaleDateString()}`, // Use timezone-aware formatting
             }
           : sub,
-      )
+      );
       // setSubscriptions(updatedSubs) // REMOVED
-      updateSubscriptions(updatedSubs) // USING NEW HELPER
-      addToHistory(updatedSubs) // Add this action to history
+      updateSubscriptions(updatedSubs); // USING NEW HELPER
+      addToHistory(updatedSubs); // Add this action to history
     }
 
-    setEmailAccounts(emailAccounts.filter((acc) => acc.id !== id))
+    setEmailAccounts(emailAccounts.filter((acc) => acc.id !== id));
 
     // Update integrations count
     setIntegrations(
-      integrations.map((int) => (int.name === "Gmail" ? { ...int, accounts: emailAccounts.length - 1 } : int)),
-    )
-  }
+      integrations.map((int) =>
+        int.name === "Gmail"
+          ? { ...int, accounts: emailAccounts.length - 1 }
+          : int,
+      ),
+    );
+  };
 
   const handleSetPrimaryEmail = (id: number) => {
-    const newPrimary = emailAccounts.find((acc) => acc.id === id)
+    const newPrimary = emailAccounts.find((acc) => acc.id === id);
 
-    if (!newPrimary) return
+    if (!newPrimary) return;
 
     const confirmChange = window.confirm(
       `Set ${newPrimary.email} as your primary email? This will be used for new subscriptions and notifications.`,
-    )
+    );
 
-    if (!confirmChange) return
+    if (!confirmChange) return;
 
     const updatedEmailAccounts = emailAccounts.map((acc) => ({
       ...acc,
       isPrimary: acc.id === id,
-    }))
-    setEmailAccounts(updatedEmailAccounts)
+    }));
+    setEmailAccounts(updatedEmailAccounts);
 
     // Update the emailAccountId for all subscriptions to point to the new primary if necessary
     // This might be complex and require user confirmation if a subscription is linked to a non-primary email.
     // For now, we'll just update the isPrimary flag.
-  }
+  };
 
   const handleRescanEmail = (id: number) => {
-    setEmailAccounts(emailAccounts.map((acc) => (acc.id === id ? { ...acc, lastScanned: new Date() } : acc)))
-  }
+    setEmailAccounts(
+      emailAccounts.map((acc) =>
+        acc.id === id ? { ...acc, lastScanned: new Date() } : acc,
+      ),
+    );
+  };
 
-  const unreadNotifications = notifications.filter((n) => !n.read).length
+  const unreadNotifications = notifications.filter((n) => !n.read).length;
 
   const detectDuplicates = () => {
-    const duplicates = []
-    const subscriptionNames = {}
+    const duplicates = [];
+    const subscriptionNames = {};
 
     subscriptions.forEach((sub) => {
-      const name = sub.name.toLowerCase()
+      const name = sub.name.toLowerCase();
       if (!subscriptionNames[name]) {
-        subscriptionNames[name] = []
+        subscriptionNames[name] = [];
       }
-      subscriptionNames[name].push(sub)
-    })
+      subscriptionNames[name].push(sub);
+    });
 
     Object.entries(subscriptionNames).forEach(([name, subs]) => {
       if (subs.length > 1) {
-        const totalCost = subs.reduce((sum, s) => sum + s.price, 0)
-        const potentialSavings = totalCost - subs[0].price
+        const totalCost = subs.reduce((sum, s) => sum + s.price, 0);
+        const potentialSavings = totalCost - subs[0].price;
         duplicates.push({
           name: subs[0].name,
           count: subs.length,
           subscriptions: subs,
           totalCost,
           potentialSavings,
-        })
+        });
       }
-    })
+    });
 
-    return duplicates
-  }
+    return duplicates;
+  };
 
   const detectUnusedSubscriptions = () => {
-    const now = new Date()
+    const now = new Date();
     return subscriptions
       .filter((sub) => {
         // Only check AI tools that have API keys connected
-        if (sub.category !== "AI Tools" || !sub.hasApiKey) return false
-        if (!sub.lastUsedAt) return false
-        const daysSinceLastUse = Math.floor((now - new Date(sub.lastUsedAt)) / (1000 * 60 * 60 * 24)) // Use date parsing
-        return daysSinceLastUse >= 30
+        if (sub.category !== "AI Tools" || !sub.hasApiKey) return false;
+        if (!sub.lastUsedAt) return false;
+        const daysSinceLastUse = Math.floor(
+          (now - new Date(sub.lastUsedAt)) / (1000 * 60 * 60 * 24),
+        ); // Use date parsing
+        return daysSinceLastUse >= 30;
       })
       .map((sub) => {
-        const daysSinceLastUse = Math.floor((now - new Date(sub.lastUsedAt)) / (1000 * 60 * 60 * 24)) // Use date parsing
+        const daysSinceLastUse = Math.floor(
+          (now - new Date(sub.lastUsedAt)) / (1000 * 60 * 60 * 24),
+        ); // Use date parsing
         return {
           ...sub,
           daysSinceLastUse,
-        }
-      })
-  }
+        };
+      });
+  };
 
   const getTrialSubscriptions = () => {
-    return subscriptions.filter((sub) => sub.isTrial)
-  }
+    return subscriptions.filter((sub) => sub.isTrial);
+  };
 
   const getCancelledSubscriptions = () => {
-    return subscriptions.filter((sub) => sub.status === "cancelled")
-  }
+    return subscriptions.filter((sub) => sub.status === "cancelled");
+  };
 
   const getPausedSubscriptions = () => {
-    return subscriptions.filter((sub) => sub.status === "paused")
-  }
+    return subscriptions.filter((sub) => sub.status === "paused");
+  };
 
   const handleEditSubscription = async (id: number, updates: any) => {
     try {
@@ -1263,14 +1345,16 @@ export default function SubsyncApp() {
         billing_cycle: updates.billingCycle,
         pricing_type: updates.pricingType,
         manually_edited: true,
-      }
+      };
 
-      await updateSubscription(id, dbUpdates)
+      await updateSubscription(id, dbUpdates);
 
       const updatedSubs = subscriptions.map((sub) => {
-        if (sub.id !== id) return sub
+        if (sub.id !== id) return sub;
 
-        const editedFields = Object.keys(updates).filter((key) => updates[key] !== sub[key])
+        const editedFields = Object.keys(updates).filter(
+          (key) => updates[key] !== sub[key],
+        );
 
         return {
           ...sub,
@@ -1278,40 +1362,42 @@ export default function SubsyncApp() {
           manuallyEdited: true,
           editedFields: [...new Set([...sub.editedFields, ...editedFields])],
           source: sub.source === "auto_detected" ? "manual" : sub.source,
-        }
-      })
+        };
+      });
 
-      updateSubscriptions(updatedSubs)
-      addToHistory(updatedSubs)
-      setShowEditSubscription(false)
+      updateSubscriptions(updatedSubs);
+      addToHistory(updatedSubs);
+      setShowEditSubscription(false);
 
       showToast({
         title: "Subscription updated",
         description: "Your changes have been saved",
         variant: "success",
-      })
+      });
     } catch (error) {
       showToast({
         title: "Error",
         description: "Failed to update subscription",
         variant: "error",
-      })
+      });
     }
-  }
+  };
 
   const handleCancelSubscription = async (id: number) => {
-    const sub = subscriptions.find((s) => s.id === id)
-    if (!sub) return
+    const sub = subscriptions.find((s) => s.id === id);
+    if (!sub) return;
 
-    const daysUntilRenewal = sub.renewsIn || 0
-    const activeUntil = new Date(Date.now() + daysUntilRenewal * 24 * 60 * 60 * 1000)
+    const daysUntilRenewal = sub.renewsIn || 0;
+    const activeUntil = new Date(
+      Date.now() + daysUntilRenewal * 24 * 60 * 60 * 1000,
+    );
 
     try {
       await updateSubscription(id, {
         status: "cancelled",
         cancelled_at: new Date().toISOString(),
         active_until: activeUntil.toISOString(),
-      })
+      });
 
       const updatedSubs = subscriptions.map((s) =>
         s.id === id
@@ -1322,39 +1408,39 @@ export default function SubsyncApp() {
               activeUntil: activeUntil.toISOString(),
             }
           : s,
-      )
+      );
 
-      updateSubscriptions(updatedSubs)
-      addToHistory(updatedSubs)
+      updateSubscriptions(updatedSubs);
+      addToHistory(updatedSubs);
 
       showToast({
         title: "Subscription cancelled",
         description: "The subscription has been cancelled",
         variant: "success",
-      })
+      });
     } catch (error) {
       showToast({
         title: "Error",
         description: "Failed to cancel subscription",
         variant: "error",
-      })
+      });
     }
-  }
+  };
 
   const handlePauseSubscription = async (id: number, resumeDate?: Date) => {
-    const sub = subscriptions.find((s) => s.id === id)
-    if (!sub) return
+    const sub = subscriptions.find((s) => s.id === id);
+    if (!sub) return;
 
     try {
       const resumesAt = resumeDate
         ? resumeDate.toISOString()
-        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
       await updateSubscription(id, {
         status: "paused",
         paused_at: new Date().toISOString(),
         resumes_at: resumesAt,
-      })
+      });
 
       const updatedSubs = subscriptions.map((s) =>
         s.id === id
@@ -1365,24 +1451,24 @@ export default function SubsyncApp() {
               resumesAt: resumesAt,
             }
           : s,
-      )
+      );
 
-      updateSubscriptions(updatedSubs)
-      addToHistory(updatedSubs)
+      updateSubscriptions(updatedSubs);
+      addToHistory(updatedSubs);
 
       showToast({
         title: "Subscription paused",
         description: "The subscription has been paused",
         variant: "success",
-      })
+      });
     } catch (error) {
       showToast({
         title: "Error",
         description: "Failed to pause subscription",
         variant: "error",
-      })
+      });
     }
-  }
+  };
 
   const handleResumeSubscription = async (id: number) => {
     try {
@@ -1390,7 +1476,7 @@ export default function SubsyncApp() {
         status: "active",
         paused_at: null,
         resumes_at: null,
-      })
+      });
 
       const updatedSubs = subscriptions.map((s) =>
         s.id === id
@@ -1401,81 +1487,95 @@ export default function SubsyncApp() {
               resumesAt: undefined,
             }
           : s,
-      )
+      );
 
-      updateSubscriptions(updatedSubs)
-      addToHistory(updatedSubs)
+      updateSubscriptions(updatedSubs);
+      addToHistory(updatedSubs);
 
       showToast({
         title: "Subscription resumed",
         description: "The subscription has been resumed",
         variant: "success",
-      })
+      });
     } catch (error) {
       showToast({
         title: "Error",
         description: "Failed to resume subscription",
         variant: "error",
-      })
+      });
     }
-  }
+  };
 
-  const duplicates = detectDuplicates()
-  const unusedSubscriptions = detectUnusedSubscriptions()
-  const trialSubscriptions = getTrialSubscriptions()
-  const cancelledSubscriptions = getCancelledSubscriptions()
-  const pausedSubscriptions = getPausedSubscriptions()
+  const duplicates = detectDuplicates();
+  const unusedSubscriptions = detectUnusedSubscriptions();
+  const trialSubscriptions = getTrialSubscriptions();
+  const cancelledSubscriptions = getCancelledSubscriptions();
+  const pausedSubscriptions = getPausedSubscriptions();
 
   // UNDECLARED VARIABLES FIXES
   const handleToggleSubscriptionSelect = (id: number) => {
     setSelectedSubscriptions((prev) => {
-      const newSet = new Set(prev)
+      const newSet = new Set(prev);
       if (newSet.has(id)) {
-        newSet.delete(id)
+        newSet.delete(id);
       } else {
-        newSet.add(id)
+        newSet.add(id);
       }
-      return newSet
-    })
-  }
+      return newSet;
+    });
+  };
 
   const handleToggleIntegration = (id: number) => {
     setIntegrations((prev) =>
       prev.map((int) =>
-        int.id === id ? { ...int, status: int.status === "connected" ? "disconnected" : "connected" } : int,
+        int.id === id
+          ? {
+              ...int,
+              status: int.status === "connected" ? "disconnected" : "connected",
+            }
+          : int,
       ),
-    )
-  }
+    );
+  };
 
   const handleMarkNotificationRead = (id: number) => {
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
-  }
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
+    );
+  };
 
   const handleUpgradePlan = (newPlan: string) => {
-    setCurrentPlan(newPlan)
-    setShowUpgradePlan(false)
+    setCurrentPlan(newPlan);
+    setShowUpgradePlan(false);
     showToast({
       title: "Plan upgraded",
       description: `Your plan has been upgraded to ${newPlan}`,
       variant: "success",
-    })
-  }
+    });
+  };
 
   const handleAddEmailAccount = (emailAccountData: any) => {
-    const newId = emailAccounts.length > 0 ? Math.max(...emailAccounts.map((acc) => acc.id)) + 1 : 1
-    setEmailAccounts([...emailAccounts, { ...emailAccountData, id: newId }])
+    const newId =
+      emailAccounts.length > 0
+        ? Math.max(...emailAccounts.map((acc) => acc.id)) + 1
+        : 1;
+    setEmailAccounts([...emailAccounts, { ...emailAccountData, id: newId }]);
     setIntegrations(
-      integrations.map((int) => (int.name === "Gmail" ? { ...int, accounts: emailAccounts.length + 1 } : int)),
-    )
+      integrations.map((int) =>
+        int.name === "Gmail"
+          ? { ...int, accounts: emailAccounts.length + 1 }
+          : int,
+      ),
+    );
     showToast({
       title: "Email account added",
       description: `${emailAccountData.email} has been successfully connected.`,
       variant: "success",
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    const newNotifications = []
+    const newNotifications = [];
 
     // Price change notifications
     priceChanges.forEach((change) => {
@@ -1486,8 +1586,8 @@ export default function SubsyncApp() {
         type: "price_change",
         read: false,
         priceChangeInfo: change,
-      })
-    })
+      });
+    });
 
     // Renewal reminder notifications
     renewalReminders.forEach((reminder) => {
@@ -1498,18 +1598,21 @@ export default function SubsyncApp() {
         type: "renewal",
         read: false,
         subscriptionId: reminder.id,
-      })
-    })
+      });
+    });
 
     // Budget alert notifications
     if (budgetAlert) {
       newNotifications.push({
         id: "budget_alert",
-        title: budgetAlert.level === "critical" ? "Budget Exceeded" : "Budget Warning",
+        title:
+          budgetAlert.level === "critical"
+            ? "Budget Exceeded"
+            : "Budget Warning",
         description: budgetAlert.message,
         type: "budget",
         read: false,
-      })
+      });
     }
 
     // Consolidation suggestion notifications
@@ -1521,26 +1624,26 @@ export default function SubsyncApp() {
         type: "consolidation",
         read: false,
         suggestionId: suggestion.id,
-      })
-    })
+      });
+    });
 
     // Merge with existing notifications (avoid duplicates)
     setNotifications((prev) => {
-      const existingIds = new Set(prev.map((n) => n.id))
-      const uniqueNew = newNotifications.filter((n) => !existingIds.has(n.id))
-      return [...prev, ...uniqueNew]
-    })
-  }, [priceChanges, renewalReminders, budgetAlert, consolidationSuggestions])
+      const existingIds = new Set(prev.map((n) => n.id));
+      const uniqueNew = newNotifications.filter((n) => !existingIds.has(n.id));
+      return [...prev, ...uniqueNew];
+    });
+  }, [priceChanges, renewalReminders, budgetAlert, consolidationSuggestions]);
 
   const handleResolveNotificationAction = (action, data) => {
-    console.log("[v0] Resolving notification action:", action, data)
+    console.log("[v0] Resolving notification action:", action, data);
 
     switch (action) {
       case "resolve_duplicate":
         // Keep only one subscription, remove others
-        const duplicateInfo = data
-        const subsToKeep = duplicateInfo.subscriptions[0]
-        const subsToRemove = duplicateInfo.subscriptions.slice(1)
+        const duplicateInfo = data;
+        const subsToKeep = duplicateInfo.subscriptions[0];
+        const subsToRemove = duplicateInfo.subscriptions.slice(1);
 
         setConfirmDialog({
           title: "Resolve duplicate subscriptions?",
@@ -1548,25 +1651,27 @@ export default function SubsyncApp() {
           variant: "warning",
           confirmLabel: "Resolve",
           onConfirm: () => {
-            const idsToRemove = subsToRemove.map((s) => s.id)
-            const updatedSubs = subscriptions.filter((sub) => !idsToRemove.includes(sub.id))
+            const idsToRemove = subsToRemove.map((s) => s.id);
+            const updatedSubs = subscriptions.filter(
+              (sub) => !idsToRemove.includes(sub.id),
+            );
             // setSubscriptions(updatedSubs) // REMOVED
-            updateSubscriptions(updatedSubs) // USING NEW HELPER
-            addToHistory(updatedSubs) // Add this action to history
-            setConfirmDialog(null)
+            updateSubscriptions(updatedSubs); // USING NEW HELPER
+            addToHistory(updatedSubs); // Add this action to history
+            setConfirmDialog(null);
 
             showToast({
               title: "Duplicate resolved",
               description: `Removed ${subsToRemove.length} duplicate subscription(s). Saving $${duplicateInfo.potentialSavings}/month`,
               variant: "success",
-            })
+            });
           },
           onCancel: () => setConfirmDialog(null),
-        })
-        break
+        });
+        break;
 
       case "cancel_unused":
-        const unusedSub = subscriptions.find((s) => s.id === data)
+        const unusedSub = subscriptions.find((s) => s.id === data);
         if (unusedSub) {
           setConfirmDialog({
             title: "Cancel unused subscription?",
@@ -1574,21 +1679,21 @@ export default function SubsyncApp() {
             variant: "warning",
             confirmLabel: "Cancel Subscription",
             onConfirm: () => {
-              handleCancelSubscription(data) // This already uses updateSubscriptions and addToHistory
-              setConfirmDialog(null)
+              handleCancelSubscription(data); // This already uses updateSubscriptions and addToHistory
+              setConfirmDialog(null);
               showToast({
                 title: "Subscription cancelled",
                 description: "Unused subscription has been cancelled",
                 variant: "success",
-              })
+              });
             },
             onCancel: () => setConfirmDialog(null),
-          })
+          });
         }
-        break
+        break;
 
       case "cancel_trial":
-        const trialSub = subscriptions.find((s) => s.id === data)
+        const trialSub = subscriptions.find((s) => s.id === data);
         if (trialSub) {
           setConfirmDialog({
             title: "Cancel trial subscription?",
@@ -1596,47 +1701,55 @@ export default function SubsyncApp() {
             variant: "warning",
             confirmLabel: "Cancel Trial",
             onConfirm: () => {
-              handleCancelSubscription(data) // This already uses updateSubscriptions and addToHistory
-              setConfirmDialog(null)
+              handleCancelSubscription(data); // This already uses updateSubscriptions and addToHistory
+              setConfirmDialog(null);
               showToast({
                 title: "Trial cancelled",
-                description: "Trial subscription has been cancelled before charge",
+                description:
+                  "Trial subscription has been cancelled before charge",
                 variant: "success",
-              })
+              });
             },
             onCancel: () => setConfirmDialog(null),
-          })
+          });
         }
-        break
+        break;
 
       case "view_consolidation":
         // Open analytics or show consolidation details
-        setShowInsightsPage(true)
-        break
+        setShowInsightsPage(true);
+        break;
     }
-  }
+  };
 
   if (showOnboarding) {
     return (
-      <OnboardingModal
-        onClose={() => setShowOnboarding(false)}
-        onModeSelect={handleModeSelect}
-        darkMode={darkMode}
-        emailAccounts={emailAccounts}
-        onAddEmailAccount={handleAddEmailAccount}
-        onRemoveEmailAccount={handleRemoveEmailAccount}
-      />
-    )
+      <>
+        {/*<ReadyComponent />*/}
+        <OnboardingModal
+          onClose={() => setShowOnboarding(false)}
+          onModeSelect={handleModeSelect}
+          darkMode={darkMode}
+          emailAccounts={emailAccounts}
+          onAddEmailAccount={handleAddEmailAccount}
+          onRemoveEmailAccount={handleRemoveEmailAccount}
+        />
+      </>
+    );
   }
 
   if (mode === "welcome") {
-    return <WelcomePage onSelectMode={handleModeSelect} darkMode={darkMode} />
+    return <WelcomePage onSelectMode={handleModeSelect} darkMode={darkMode} />;
   }
 
   if (mode === "enterprise-setup") {
     return (
-      <EnterpriseSetup onComplete={handleEnterpriseSetupComplete} onBack={handleBackToWelcome} darkMode={darkMode} />
-    )
+      <EnterpriseSetup
+        onComplete={handleEnterpriseSetupComplete}
+        onBack={handleBackToWelcome}
+        darkMode={darkMode}
+      />
+    );
   }
 
   if (isLoadingSubscriptions) {
@@ -1646,12 +1759,14 @@ export default function SubsyncApp() {
       >
         <LoadingSpinner size="lg" darkMode={darkMode} />
       </div>
-    )
+    );
   }
 
   if (subscriptions.length === 0 && mode !== "welcome") {
     return (
-      <div className={`min-h-screen ${darkMode ? "bg-[#1E2A35] text-[#F9F6F2]" : "bg-[#F9F6F2] text-[#1E2A35]"} `}>
+      <div
+        className={`min-h-screen ${darkMode ? "bg-[#1E2A35] text-[#F9F6F2]" : "bg-[#F9F6F2] text-[#1E2A35]"} `}
+      >
         <EmptyState
           icon="📦"
           title="No subscriptions yet"
@@ -1663,7 +1778,7 @@ export default function SubsyncApp() {
           darkMode={darkMode}
         />
       </div>
-    )
+    );
   }
 
   return (
@@ -1693,19 +1808,29 @@ export default function SubsyncApp() {
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileMenuOpen}
         >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {mobileMenuOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
         </button>
 
         {/* Sidebar */}
         <aside
           className={`${
-            mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+            mobileMenuOpen
+              ? "translate-x-0"
+              : "-translate-x-full md:translate-x-0"
           } fixed md:relative w-56 border-r ${darkMode ? "border-[#374151] bg-[#2D3748]" : "border-gray-200 bg-white"} p-6 flex flex-col transition-transform duration-300 z-40 h-screen`}
           role="navigation"
           aria-label="Main navigation"
         >
           <div className="mb-12">
-            <h1 className={`text-xl font-bold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>Subsync.AI</h1>
+            <h1
+              className={`text-xl font-bold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+            >
+              Subsync.AI
+            </h1>
           </div>
 
           <nav className="flex-1 space-y-1">
@@ -1714,17 +1839,19 @@ export default function SubsyncApp() {
               { id: "subscriptions", label: "Subscriptions", icon: CreditCard },
               { id: "analytics", label: "Analytics", icon: BarChart3 },
               { id: "integrations", label: "Integrations", icon: Plug },
-              ...(mode === "enterprise" ? [{ id: "teams", label: "Teams", icon: Users }] : []),
+              ...(mode === "enterprise"
+                ? [{ id: "teams", label: "Teams", icon: Users }]
+                : []),
               { id: "settings", label: "Settings", icon: Settings },
             ].map((item) => {
-              const Icon = item.icon
-              const isActive = activeView === item.id
+              const Icon = item.icon;
+              const isActive = activeView === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => {
-                    setActiveView(item.id)
-                    setMobileMenuOpen(false)
+                    setActiveView(item.id);
+                    setMobileMenuOpen(false);
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
                     isActive
@@ -1738,14 +1865,20 @@ export default function SubsyncApp() {
                   aria-label={`Navigate to ${item.label}`}
                   aria-current={isActive ? "page" : undefined}
                 >
-                  <Icon className="w-5 h-5" strokeWidth={1.5} aria-hidden="true" />
+                  <Icon
+                    className="w-5 h-5"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
                   <span className="text-sm">{item.label}</span>
                 </button>
-              )
+              );
             })}
           </nav>
 
-          <div className={`mt-auto pt-6 border-t ${darkMode ? "border-gray-700" : "border-gray-200"}`}>
+          <div
+            className={`mt-auto pt-6 border-t ${darkMode ? "border-gray-700" : "border-gray-200"}`}
+          >
             <div className="flex items-center gap-3">
               <div
                 className={`w-10 h-10 ${darkMode ? "bg-[#FFD166]" : "bg-[#FFD166]"} rounded-full flex items-center justify-center text-lg text-[#1E2A35]`}
@@ -1753,14 +1886,18 @@ export default function SubsyncApp() {
                 👤
               </div>
               <div className="flex-1">
-                <div className={`text-sm font-semibold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+                <div
+                  className={`text-sm font-semibold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+                >
                   Caleb Alexhone
                 </div>
                 <button
                   onClick={() => setShowUpgradePlan(true)}
                   className={`text-xs ${darkMode ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"}`}
                 >
-                  {currentPlan === "free" ? "Upgrade plan" : `${currentPlan} plan`}
+                  {currentPlan === "free"
+                    ? "Upgrade plan"
+                    : `${currentPlan} plan`}
                 </button>
               </div>
             </div>
@@ -1781,7 +1918,9 @@ export default function SubsyncApp() {
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h2 className={`text-2xl font-bold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}>
+                  <h2
+                    className={`text-2xl font-bold ${darkMode ? "text-white" : "text-[#1E2A35]"}`}
+                  >
                     {activeView === "dashboard" && "Dashboard"}
                     {activeView === "subscriptions" && "Subscriptions"}
                     {activeView === "analytics" && "Analytics"}
@@ -1789,22 +1928,36 @@ export default function SubsyncApp() {
                     {activeView === "teams" && "Teams"}
                     {activeView === "settings" && "Settings"}
                   </h2>
-                  <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"} mt-1`}>
-                    {activeView === "dashboard" && "Welcome back! Here is your AI subscription overview."}
-                    {activeView === "subscriptions" && "Manage and track all your AI tool subscriptions"}
-                    {activeView === "analytics" && "View detailed analytics and spending insights"}
-                    {activeView === "integrations" && "Central control for all your data connections"}
-                    {activeView === "teams" && "Manage your team members and their subscriptions"}
-                    {activeView === "settings" && "Account management and preferences"}
+                  <p
+                    className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"} mt-1`}
+                  >
+                    {activeView === "dashboard" &&
+                      "Welcome back! Here is your AI subscription overview."}
+                    {activeView === "subscriptions" &&
+                      "Manage and track all your AI tool subscriptions"}
+                    {activeView === "analytics" &&
+                      "View detailed analytics and spending insights"}
+                    {activeView === "integrations" &&
+                      "Central control for all your data connections"}
+                    {activeView === "teams" &&
+                      "Manage your team members and their subscriptions"}
+                    {activeView === "settings" &&
+                      "Account management and preferences"}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setDarkMode(!darkMode)}
                     className={`p-2 ${darkMode ? "hover:bg-[#2D3748]" : "hover:bg-gray-100"} rounded-lg transition-colors`}
-                    aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+                    aria-label={
+                      darkMode ? "Switch to light mode" : "Switch to dark mode"
+                    }
                   >
-                    {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                    {darkMode ? (
+                      <Sun className="w-5 h-5" />
+                    ) : (
+                      <Moon className="w-5 h-5" />
+                    )}
                   </button>
                   <button
                     onClick={() => setShowNotifications(!showNotifications)}
@@ -1872,7 +2025,11 @@ export default function SubsyncApp() {
                     } rounded-full h-2`}
                   >
                     <div
-                      className={budgetAlert.level === "critical" ? "bg-[#E86A33]" : "bg-[#FFD166]"}
+                      className={
+                        budgetAlert.level === "critical"
+                          ? "bg-[#E86A33]"
+                          : "bg-[#FFD166]"
+                      }
                       style={{
                         width: `${Math.min(Number.parseFloat(budgetAlert.percentage), 100)}%`,
                         height: "100%",
@@ -1883,63 +2040,72 @@ export default function SubsyncApp() {
                 </div>
               )}
 
-              {selectedSubscriptions.size > 0 && activeView === "subscriptions" && (
-                <div
-                  className={`mb-6 p-4 ${darkMode ? "bg-[#007A5C]/20 border-[#007A5C]" : "bg-blue-50 border-blue-200"} border rounded-lg flex items-center justify-between`}
-                >
-                  <p className={`text-sm font-medium ${darkMode ? "text-[#007A5C]" : "text-blue-800"}`}>
-                    {selectedSubscriptions.size} subscription(s) selected
-                  </p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={undo}
-                      disabled={!canUndo || bulkActionLoading} // Use canUndo from useUndoManager
-                      className={`px-3 py-1.5 text-sm ${darkMode ? "bg-[#2D3748] hover:bg-[#374151]" : "bg-gray-200 hover:bg-gray-300"} rounded disabled:opacity-50 flex items-center gap-2`}
+              {selectedSubscriptions.size > 0 &&
+                activeView === "subscriptions" && (
+                  <div
+                    className={`mb-6 p-4 ${darkMode ? "bg-[#007A5C]/20 border-[#007A5C]" : "bg-blue-50 border-blue-200"} border rounded-lg flex items-center justify-between`}
+                  >
+                    <p
+                      className={`text-sm font-medium ${darkMode ? "text-[#007A5C]" : "text-blue-800"}`}
                     >
-                      {bulkActionLoading ? <LoadingSpinner size="sm" darkMode={darkMode} /> : "Undo"}
-                    </button>
-                    <button
-                      onClick={redo}
-                      disabled={!canRedo || bulkActionLoading} // Use canRedo from useUndoManager
-                      className={`px-3 py-1.5 text-sm ${darkMode ? "bg-[#2D3748] hover:bg-[#374151]" : "bg-gray-200 hover:bg-gray-300"} rounded disabled:opacity-50`}
-                    >
-                      Redo
-                    </button>
-                    <button
-                      onClick={handleBulkExport}
-                      disabled={bulkActionLoading}
-                      className="px-3 py-1.5 text-sm bg-[#007A5C] text-white rounded hover:bg-[#007A5C]/90 disabled:opacity-50 flex items-center gap-2"
-                    >
-                      <Download className="w-4 h-4" />
-                      Export CSV
-                    </button>
-                    <button
-                      onClick={handleBulkPause}
-                      disabled={bulkActionLoading}
-                      className="px-3 py-1.5 text-sm bg-[#FFD166] text-[#1E2A35] rounded hover:bg-[#FFD166]/90 disabled:opacity-50 flex items-center gap-2"
-                    >
-                      {bulkActionLoading && <LoadingSpinner size="sm" />}
-                      Pause Selected
-                    </button>
-                    <button
-                      onClick={handleBulkCancel}
-                      disabled={bulkActionLoading}
-                      className="px-3 py-1.5 text-sm bg-[#FFD166] text-[#1E2A35] rounded hover:bg-[#FFD166]/90 disabled:opacity-50 flex items-center gap-2"
-                    >
-                      {bulkActionLoading && <LoadingSpinner size="sm" />}
-                      Cancel Selected
-                    </button>
-                    <button
-                      onClick={handleBulkDelete}
-                      disabled={bulkActionLoading}
-                      className="px-3 py-1.5 text-sm bg-[#E86A33] text-white rounded hover:bg-[#E86A33]/90 disabled:opacity-50 flex items-center gap-2"
-                    >
-                      {bulkActionLoading && <LoadingSpinner size="sm" darkMode />}
-                      Delete Selected
-                    </button>
+                      {selectedSubscriptions.size} subscription(s) selected
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={undo}
+                        disabled={!canUndo || bulkActionLoading} // Use canUndo from useUndoManager
+                        className={`px-3 py-1.5 text-sm ${darkMode ? "bg-[#2D3748] hover:bg-[#374151]" : "bg-gray-200 hover:bg-gray-300"} rounded disabled:opacity-50 flex items-center gap-2`}
+                      >
+                        {bulkActionLoading ? (
+                          <LoadingSpinner size="sm" darkMode={darkMode} />
+                        ) : (
+                          "Undo"
+                        )}
+                      </button>
+                      <button
+                        onClick={redo}
+                        disabled={!canRedo || bulkActionLoading} // Use canRedo from useUndoManager
+                        className={`px-3 py-1.5 text-sm ${darkMode ? "bg-[#2D3748] hover:bg-[#374151]" : "bg-gray-200 hover:bg-gray-300"} rounded disabled:opacity-50`}
+                      >
+                        Redo
+                      </button>
+                      <button
+                        onClick={handleBulkExport}
+                        disabled={bulkActionLoading}
+                        className="px-3 py-1.5 text-sm bg-[#007A5C] text-white rounded hover:bg-[#007A5C]/90 disabled:opacity-50 flex items-center gap-2"
+                      >
+                        <Download className="w-4 h-4" />
+                        Export CSV
+                      </button>
+                      <button
+                        onClick={handleBulkPause}
+                        disabled={bulkActionLoading}
+                        className="px-3 py-1.5 text-sm bg-[#FFD166] text-[#1E2A35] rounded hover:bg-[#FFD166]/90 disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {bulkActionLoading && <LoadingSpinner size="sm" />}
+                        Pause Selected
+                      </button>
+                      <button
+                        onClick={handleBulkCancel}
+                        disabled={bulkActionLoading}
+                        className="px-3 py-1.5 text-sm bg-[#FFD166] text-[#1E2A35] rounded hover:bg-[#FFD166]/90 disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {bulkActionLoading && <LoadingSpinner size="sm" />}
+                        Cancel Selected
+                      </button>
+                      <button
+                        onClick={handleBulkDelete}
+                        disabled={bulkActionLoading}
+                        className="px-3 py-1.5 text-sm bg-[#E86A33] text-white rounded hover:bg-[#E86A33]/90 disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {bulkActionLoading && (
+                          <LoadingSpinner size="sm" darkMode />
+                        )}
+                        Delete Selected
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* Page Content */}
               {activeView === "dashboard" && (
@@ -1974,10 +2140,18 @@ export default function SubsyncApp() {
                 />
               )}
               {activeView === "analytics" && (
-                <AnalyticsPage subscriptions={subscriptions} totalSpend={totalSpend} darkMode={darkMode} />
+                <AnalyticsPage
+                  subscriptions={subscriptions}
+                  totalSpend={totalSpend}
+                  darkMode={darkMode}
+                />
               )}
               {activeView === "integrations" && (
-                <IntegrationsPage integrations={integrations} onToggle={handleToggleIntegration} darkMode={darkMode} />
+                <IntegrationsPage
+                  integrations={integrations}
+                  onToggle={handleToggleIntegration}
+                  darkMode={darkMode}
+                />
               )}
               {activeView === "teams" && (
                 <TeamsPage
@@ -2042,12 +2216,12 @@ export default function SubsyncApp() {
             subscription={selectedSubscription}
             onClose={() => setShowManageSubscription(false)}
             onDelete={() => {
-              handleDeleteSubscription(selectedSubscription.id)
-              setShowManageSubscription(false)
+              handleDeleteSubscription(selectedSubscription.id);
+              setShowManageSubscription(false);
             }}
             onEdit={() => {
-              setShowManageSubscription(false)
-              setShowEditSubscription(true)
+              setShowManageSubscription(false);
+              setShowEditSubscription(true);
             }}
             onCancel={handleCancelSubscription}
             onPause={handlePauseSubscription}
@@ -2058,7 +2232,9 @@ export default function SubsyncApp() {
         {showEditSubscription && selectedSubscription && (
           <EditSubscriptionModal
             subscription={selectedSubscription}
-            onSave={(updates) => handleEditSubscription(selectedSubscription.id, updates)}
+            onSave={(updates) =>
+              handleEditSubscription(selectedSubscription.id, updates)
+            }
             onClose={() => setShowEditSubscription(false)}
             darkMode={darkMode}
           />
@@ -2098,5 +2274,5 @@ export default function SubsyncApp() {
         )}
       </div>
     </ErrorBoundary>
-  )
+  );
 }
