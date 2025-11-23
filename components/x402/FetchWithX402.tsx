@@ -10,7 +10,7 @@ interface FetchWithX402Props {
 }
 
 export default function FetchWithX402({
-  endpoint,
+  endpoint = "/api/x402/test",
   label = "Fetch Premium Content",
   maxValue,
 }: FetchWithX402Props) {
@@ -46,7 +46,7 @@ export default function FetchWithX402({
       const fetchWithPayment = wrapFetchWithPayment({
         walletAddress: address,
         fetch,
-        ...(maxValue !== undefined && { maxValue }),
+        ...(maxValue !== undefined ? { maxValue } : {}),
       });
 
       const response = await fetchWithPayment(endpoint, { method: "GET" });
